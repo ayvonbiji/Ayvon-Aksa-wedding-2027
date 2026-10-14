@@ -108,17 +108,20 @@ describe('engagement (secondary event)', () => {
     expect(e.dateLabel).toBe('Wednesday, 18 August 2027');
     expect(e.timeLabel).toBe('5:00 PM IST');
   });
-  it('does not invent a venue', () => {
-    expect(e.venue).toBe('');
-    expect(e.mapsUrl).toBe('');
+  it('uses the confirmed venue and a Google Maps link', () => {
+    expect(e.venue).toBe("St. John's Knanaya Jacobite Church (Puthenpally)");
+    expect(e.place).toBe('GG8F+GX8, SH 1, Chingavanam, Kerala 686531, India');
+    expect(e.mapsUrl).toMatch(/^https:\/\/www\.google\.com\/maps\/search\/\?api=1&query=St\.\+John%27s\+Knanaya\+Jacobite\+Church\+Puthenpally\+Chingavanam/);
   });
   it('has its own calendar event; the countdown still targets the wedding', () => {
     const ics = buildICS(new Date('2026-10-14T00:00:00Z'), engagementEvent);
     expect(ics).toContain('DTSTART;TZID=Asia/Kolkata:20270818T170000');
     expect(ics).toContain('DTEND;TZID=Asia/Kolkata:20270818T190000');
-    expect(ics).not.toContain('LOCATION:');
+    expect(ics.replace(/\r\n /g, '')).toContain("LOCATION:St. John's Knanaya Jacobite Church (Puthenpally)\\, GG8F+GX8\\, SH 1\\, Chingavanam\\, Kerala 686531\\, India");
     expect(eventTimes(engagementEvent).localStart).toBe('20270818T170000');
-    expect(new URL(googleCalendarUrl(engagementEvent)).searchParams.get('dates')).toBe('20270818T113000Z/20270818T133000Z');
+    const g = new URL(googleCalendarUrl(engagementEvent)).searchParams;
+    expect(g.get('dates')).toBe('20270818T113000Z/20270818T133000Z');
+    expect(g.get('location')).toContain('Chingavanam');
     expect(new Date(CEREMONY_MS).toISOString()).toBe('2027-08-23T05:30:00.000Z');
   });
 });

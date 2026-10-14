@@ -45,7 +45,7 @@ You can also run `npm run build:docs` yourself and commit `docs/`.
 | What | File |
 | --- | --- |
 | Names, wedding date & time, venue, map link, site URL, messages, music, upload limits | `src/config/wedding.ts` |
-| Engagement (18 Aug 2027, 5:00 PM) — add the venue when confirmed | `src/config/wedding.ts` → `engagement` |
+| Engagement (18 Aug 2027, 5:00 PM, St. John's, Chingavanam) | `src/config/wedding.ts` → `engagement` |
 | Love story chapters | `src/content/story.ts` |
 | Your personal photo gallery | `src/content/gallery.ts` |
 | Colours, fonts, spacing (design tokens) | top of `src/styles/global.css` |
@@ -54,13 +54,19 @@ You can also run `npm run build:docs` yourself and commit `docs/`.
 | Logos, favicons, social image, QR codes, QR card generator | `scripts/build-assets.mjs` |
 | Guest-photo database & security rules | `supabase/migrations/001_wedding_memories.sql` |
 
-### Engagement card
+### Event cards ("Our Special Days")
 
-The wedding is the main event; the engagement appears as a smaller second card with its
-own Apple/Outlook and Google Calendar buttons. The countdown always targets the wedding.
-The engagement venue is **not set yet** — the card says "Venue to be announced". When it's
-confirmed, fill in `engagement.venue`, `engagement.place` and (optionally)
-`engagement.mapsUrl` in `src/config/wedding.ts`; "Get Directions" appears automatically.
+Two matching cards, **Engagement first, Wedding second** (on phones they stack in the same
+order). Both come from one `EventCard` component in `src/components/WeddingDay.tsx`;
+the data lives in `src/config/wedding.ts`:
+
+* `engagement` — Wednesday, 18 August 2027, 5:00 PM IST, St. John's Knanaya Jacobite
+  Church (Puthenpally), GG8F+GX8, SH 1, Chingavanam, Kerala 686531, India.
+* `ceremony` — Monday, 23 August 2027, 11:00 AM IST, St. Thomas Valiyapally, Ranni.
+
+Each has its own Get Directions, Apple/Outlook (.ics) and Google Calendar buttons;
+change the length with `durationMinutes`. Clearing `engagement.venue` brings back
+"Venue to be announced" and hides Directions. The countdown always targets the wedding.
 
 ### Love story
 

@@ -9,60 +9,113 @@ interface Row {
   label: string;
   value: string;
   muted?: boolean;
+  small?: boolean;
 }
 
-interface CardProps {
-  kind: 'primary' | 'secondary';
-  ribbon: string;
+interface EventData {
+  key: 'engagement' | 'wedding';
+  category: string;
   title: string;
-  subtitle?: string;
   rows: Row[];
   mapsUrl?: string;
-  event: CalEvent;
-  delay?: number;
+  venueLabel: string;
+  calendar: CalEvent;
 }
 
-/** One premium event card: ribbon, florals, gold double border, staggered rows. */
-function EventCard({ kind, ribbon, title, subtitle, rows, mapsUrl, event, delay = 0 }: CardProps) {
-  const id = `event-${event.id}`;
+const couple = `${wedding.groom.full} & ${wedding.bride.full}`;
+
+/** The two celebrations, in display order: engagement first, then the wedding. */
+function events(): EventData[] {
+  const e = wedding.engagement;
+  const c = wedding.ceremony;
+  const list: EventData[] = [];
+  if (e.show) {
+    list.push({
+      key: 'engagement',
+      category: 'The Engagement',
+      title: e.title,
+      rows: [
+        { icon: 'calendar', label: 'Date', value: e.dateLabel },
+        { icon: 'clock', label: 'Time', value: e.timeLabel },
+        { icon: 'church', label: 'Venue', value: e.venue || e.venuePlaceholder, muted: !e.venue },
+        ...(e.place ? [{ icon: 'pin' as const, label: 'Location', value: e.place, small: true }] : []),
+      ],
+      mapsUrl: e.venue && e.mapsUrl ? e.mapsUrl : undefined,
+      venueLabel: e.venue || 'engagement venue',
+      calendar: engagementEvent,
+    });
+  }
+  list.push({
+    key: 'wedding',
+    category: 'The Wedding',
+    title: 'Holy Matrimony',
+    rows: [
+      { icon: 'calendar', label: 'Date', value: c.dateLabel },
+      { icon: 'clock', label: 'Time', value: c.timeLabel },
+      { icon: 'church', label: 'Venue', value: c.venue },
+      { icon: 'pin', label: 'Location', value: `${c.town}, ${c.region}, ${c.country}`, small: true },
+    ],
+    mapsUrl: c.mapsUrl,
+    venueLabel: c.venue,
+    calendar: weddingEvent,
+  });
+  return list;
+}
+
+/** One event card — identical structure and styling for every event. */
+function EventCard({ ev, index }: { ev: EventData; index: number }) {
+  const id = `event-${ev.key}`;
+  let step = 0; // stagger counter for the inner reveal
+  const s = () => ({ ['--i' as string]: step++ });
   return (
-    <Reveal as="article" className={`event-card event-card--${kind}`} variant="zoom" delay={delay} aria-labelledby={`${id}-title`}>
+    <Reveal
+      as="article"
+      className={`event-card event-card--${ev.key}`}
+      variant="up"
+      delay={index * 180}
+      aria-labelledby={`${id}-title`}
+    >
       <span className="event-card__frame" aria-hidden="true" />
-      <Art {...(kind === 'primary' ? art.bouquet : art.bouquetAlt)} className="event-card__flowers" />
-      <p className="event-card__ribbon">
-        <span>{ribbon}</span>
-      </p>
-      <h3 id={`${id}-title`} className="event-card__title">{title}</h3>
-      {subtitle && <p className="event-card__subtitle">{subtitle}</p>}
-      <Art {...art.divider} className="event-card__divider" />
+      <Art {...(ev.key === 'engagement' ? art.bouquetAlt : art.bouquet)} className="event-card__flowers" />
+
+      <header className="event-card__head">
+        <p className="event-card__ribbon stagger" style={s()}>
+          <span>{ev.category}</span>
+        </p>
+        <h3 id={`${id}-title`} className="event-card__title stagger" style={s()}>
+          {ev.title}
+        </h3>
+        <p className="event-card__subtitle stagger" style={s()}>{couple}</p>
+        <Art {...art.divider} className="event-card__divider stagger" style={s()} />
+      </header>
 
       <dl className="event-card__rows">
-        {rows.map((r, i) => (
-          <div key={r.label} className="event-row" style={{ ['--i' as string]: i }}>
+        {ev.rows.map((r) => (
+          <div key={r.label} className="event-row stagger" style={s()}>
             <dt>
               <span className="event-row__icon"><Icon name={r.icon} /></span>
               <span className="event-row__label">{r.label}</span>
             </dt>
-            <dd className={r.muted ? 'event-row__value event-row__value--muted' : 'event-row__value'}>{r.value}</dd>
+            <dd className={`event-row__value${r.muted ? ' event-row__value--muted' : ''}${r.small ? ' event-row__value--small' : ''}`}>{r.value}</dd>
           </div>
         ))}
       </dl>
 
-      <div className="event-card__actions" style={{ ['--i' as string]: rows.length }}>
-        {mapsUrl && (
-          <a className="btn btn--solid event-card__btn" href={mapsUrl} target="_blank" rel="noopener noreferrer">
+      <div className="event-card__actions stagger" style={s()}>
+        {ev.mapsUrl && (
+          <a className="btn btn--solid event-card__btn event-card__directions" href={ev.mapsUrl} target="_blank" rel="noopener noreferrer">
             <Icon name="pin" /> Get Directions
-            <span className="sr-only"> to the {event.id === 'wedding' ? 'wedding' : 'engagement'} venue (opens Google Maps in a new tab)</span>
+            <span className="sr-only"> to {ev.venueLabel} (opens Google Maps in a new tab)</span>
           </a>
         )}
         <div className="event-card__cal">
-          <button type="button" className="btn btn--pill event-card__btn" onClick={() => downloadICS(event)}>
+          <button type="button" className="btn btn--pill event-card__btn" onClick={() => downloadICS(ev.calendar)}>
             <Icon name="download" /> Apple / Outlook
-            <span className="sr-only"> calendar file for the {event.id}</span>
+            <span className="sr-only"> calendar file for the {ev.key}</span>
           </button>
-          <a className="btn btn--pill event-card__btn" href={googleCalendarUrl(event)} target="_blank" rel="noopener noreferrer">
+          <a className="btn btn--pill event-card__btn" href={googleCalendarUrl(ev.calendar)} target="_blank" rel="noopener noreferrer">
             <Icon name="calendar" /> Google Calendar
-            <span className="sr-only"> for the {event.id} (opens in a new tab)</span>
+            <span className="sr-only"> for the {ev.key} (opens in a new tab)</span>
           </a>
         </div>
       </div>
@@ -70,53 +123,26 @@ function EventCard({ kind, ribbon, title, subtitle, rows, mapsUrl, event, delay 
   );
 }
 
-/** "Our Celebrations": the wedding ceremony (primary) and the engagement (secondary). */
+/** "Our Special Days": the engagement and the wedding ceremony as matching cards. */
 export function WeddingDay() {
-  const c = wedding.ceremony;
-  const e = wedding.engagement;
-  const engagementVenue = [e.venue, e.place].filter(Boolean).join(', ');
-
+  const list = events();
   return (
     <section id="wedding-day" className="section wedding-day" aria-labelledby="wedding-day-title">
       <Art {...art.cornerTR} className="corner corner--tr corner--soft" />
       <Art {...art.cornerBL} className="corner corner--bl corner--soft" />
+      <span className="wedding-day__line wedding-day__line--l" aria-hidden="true" />
+      <span className="wedding-day__line wedding-day__line--r" aria-hidden="true" />
       <Reveal className="section__head">
         <Art {...art.bow} className="section__bow" />
-        <h2 id="wedding-day-title" className="section__title">Our Wedding Day</h2>
+        <h2 id="wedding-day-title" className="section__title">Our Special Days</h2>
         <p className="section__lead">Join us as we celebrate</p>
         <Art {...art.divider} className="divider" />
       </Reveal>
 
-      <div className={`events ${e.show ? 'events--two' : ''}`}>
-        <EventCard
-          kind="primary"
-          ribbon="The Wedding"
-          title="Holy Matrimony"
-          subtitle={`${wedding.groom.full} & ${wedding.bride.full}`}
-          rows={[
-            { icon: 'calendar', label: 'Date', value: c.dateLabel },
-            { icon: 'clock', label: 'Time', value: c.timeLabel },
-            { icon: 'church', label: 'Venue', value: c.venue },
-            { icon: 'pin', label: 'Location', value: `${c.town}, ${c.region}, ${c.country}` },
-          ]}
-          mapsUrl={c.mapsUrl}
-          event={weddingEvent}
-        />
-        {e.show && (
-          <EventCard
-            kind="secondary"
-            ribbon="Also celebrating"
-            title={e.title}
-            rows={[
-              { icon: 'calendar', label: 'Date', value: e.dateLabel },
-              { icon: 'clock', label: 'Time', value: e.timeLabel },
-              { icon: 'pin', label: 'Venue', value: engagementVenue || e.venuePlaceholder, muted: !engagementVenue },
-            ]}
-            mapsUrl={e.mapsUrl || undefined}
-            event={engagementEvent}
-            delay={150}
-          />
-        )}
+      <div className={`events events--${list.length}`}>
+        {list.map((ev, i) => (
+          <EventCard key={ev.key} ev={ev} index={i} />
+        ))}
       </div>
     </section>
   );

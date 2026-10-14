@@ -49,15 +49,10 @@ export const wedding = {
     dateLabel: 'Wednesday, 18 August 2027',
     shortDateLabel: '18 August 2027',
     timeLabel: '5:00 PM IST',
-    /**
-     * Venue NOT yet confirmed. Fill these in when it is, e.g.
-     *   venue: 'Church name', place: 'Town, District',
-     *   mapsUrl: 'https://maps.app.goo.gl/…'  (Google Maps → Share → Copy link)
-     * Until then the card shows `venuePlaceholder` and hides "Get Directions".
-     */
-    venue: '',
-    place: '',
-    mapsUrl: '',
+    /** Confirmed venue. Leave venue/place empty to show `venuePlaceholder` and hide Directions. */
+    venue: "St. John's Knanaya Jacobite Church (Puthenpally)",
+    place: 'GG8F+GX8, SH 1, Chingavanam, Kerala 686531, India',
+    mapsUrl: 'https://www.google.com/maps/search/?api=1&query=St.+John%27s+Knanaya+Jacobite+Church+Puthenpally+Chingavanam+Kerala',
     venuePlaceholder: 'Venue to be announced',
   },
 
