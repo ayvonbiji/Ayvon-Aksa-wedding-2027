@@ -6,6 +6,7 @@ export const NAV = [
   { id: 'wedding-day', label: 'Wedding Day' },
   { id: 'love-story', label: 'Our Love Story' },
   { id: 'gallery', label: 'Gallery' },
+  { id: 'memories', label: 'Memories' },
 ] as const;
 
 export function scrollToId(id: string) {

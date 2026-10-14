@@ -1975,3 +1975,201 @@ p {
 .hero__names:focus {
   outline: none;
 }
+
+/* ── Our Wedding Memories (homepage section) ────────────────────────────── */
+
+.memories {
+  background: linear-gradient(180deg, rgba(246, 237, 226, 0), rgba(246, 237, 226, 0.7) 20%, rgba(246, 237, 226, 0.7) 80%, rgba(246, 237, 226, 0));
+}
+.memories__empty {
+  position: relative;
+  z-index: 2;
+  max-width: 620px;
+  margin: 0 auto;
+  text-align: center;
+}
+.memories__lead {
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.memories__status {
+  margin-top: 0.8rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+.memories__invite {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem 2.2rem;
+  margin-top: 1.8rem;
+  padding: 1.5rem;
+  background: rgba(255, 253, 249, 0.85);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.memories__grid {
+  position: relative;
+  z-index: 2;
+  list-style: none;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0;
+  columns: 2 160px;
+  column-gap: clamp(0.5rem, 1.6vw, 1rem);
+}
+@media (min-width: 900px) {
+  .memories__grid {
+    columns: 4 220px;
+  }
+}
+.memories__cell {
+  break-inside: avoid;
+  margin-bottom: clamp(0.5rem, 1.6vw, 1rem);
+  background: var(--paper);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+.memories__cell button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--cream);
+  cursor: zoom-in;
+}
+.memories__cell img {
+  width: 100%;
+  height: auto;
+  min-height: 80px;
+}
+.memories__meta {
+  padding: 0.5rem 0.75rem 0.65rem;
+  font-size: 0.98rem;
+  line-height: 1.35;
+  color: var(--ink-soft);
+}
+.memories__meta span {
+  display: block;
+}
+.memories__by {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-text);
+  margin-top: 0.2rem;
+}
+.memories__actions {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.8rem;
+}
+.linklike {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--rose-deep);
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+
+/* ── QR codes ───────────────────────────────────────────────────────────── */
+
+.qrcode {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  text-align: center;
+}
+.qrcode__code {
+  padding: 8px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+}
+.qrcode__code svg {
+  width: 100%;
+  height: auto;
+}
+.qrcode figcaption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+.qrcode__label {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-text);
+  max-width: 22ch;
+}
+.qrcode--upload .qrcode__label {
+  color: var(--rose-deep);
+}
+.qrcode__url {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  word-break: break-all;
+  max-width: 26ch;
+}
+.qrcode__actions {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+}
+.qr-pair {
+  margin-top: 1.8rem;
+  padding: 1.6rem 1.2rem;
+  background: rgba(255, 253, 249, 0.85);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.qr-pair__codes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem 1.5rem;
+}
+.qr-pair__print {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.6rem;
+  padding-top: 1.3rem;
+  border-top: 1px dashed var(--line);
+}
+
+.footer__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1.1rem;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rose-deep);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+}
+.footer__link .icon {
+  width: 16px;
+  height: 16px;
+}

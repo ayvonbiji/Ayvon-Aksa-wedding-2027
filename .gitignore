@@ -3,3 +3,4 @@ dist
 photos
 *.log
 .DS_Store
+dist-test

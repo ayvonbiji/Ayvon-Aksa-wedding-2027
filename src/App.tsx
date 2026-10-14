@@ -6,6 +6,7 @@ import { Hero } from './components/Hero';
 import { WeddingDay } from './components/WeddingDay';
 import { LoveStory } from './components/LoveStory';
 import { Gallery } from './components/Gallery';
+import { Memories } from './components/Memories';
 import { Verse, GuestAndShare, Footer, MusicControl, BackToTop, Petals } from './components/Extras';
 import { useNow } from './lib/hooks';
 import { prefersReducedMotion } from './lib/assets';
@@ -48,6 +49,7 @@ export default function App() {
           <Verse />
           <LoveStory />
           <Gallery />
+          <Memories />
           <GuestAndShare />
         </main>
         <Footer />

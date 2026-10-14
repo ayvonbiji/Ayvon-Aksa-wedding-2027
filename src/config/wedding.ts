@@ -121,6 +121,47 @@ export const wedding = {
     volume: 0.45,
   },
 
+  /* ── Guest photo uploads — "Our Wedding Memories" ───────────────────────── */
+  memories: {
+    /**
+     * Supabase project (see README → "Guest photo uploads").
+     * The anon/public key is DESIGNED to be public — security comes from the
+     * database rules in supabase/migrations. NEVER put the service_role key here.
+     * Leave empty to show a friendly "opening soon" message instead.
+     * (Environment variables VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY override these.)
+     */
+    supabaseUrl: '',
+    supabaseAnonKey: '',
+    bucket: 'wedding-memories',
+    /** Path of the upload page, relative to siteUrl. */
+    uploadPath: 'upload-memories/',
+    /** Path of the private owner page, relative to siteUrl. */
+    managePath: 'manage-memories/',
+
+    heading: 'Our Wedding Memories',
+    emptyMessage:
+      'Help us collect the moments that make our wedding unforgettable. Scan our QR code and share your photographs with us.',
+    uploadTitle: 'Our Wedding Memories',
+    uploadSubtitle: 'Share your beautiful moments with Ayvon & Aksa.',
+    uploadHeading: 'Capture the Love, Share the Memories',
+    uploadMessage:
+      'Every photograph tells a story. Share your favourite moments from our wedding and help us keep these memories forever.',
+    privacyNotice:
+      'Photos you share are reviewed by Ayvon & Aksa before they appear in "Our Wedding Memories" on this website, where anyone with the link can see them. Your name and caption are shown only if you tick the box to show them. Location and camera data are removed from your photos before upload. To have a photo removed, use "Remove" on this device, or contact Ayvon & Aksa.',
+
+    /** Client-side limits (the database enforces its own limits too). */
+    maxFilesPerBatch: 20,
+    maxInputMB: 30,
+    /** Photos are resized to this many pixels on the long edge and re-saved as JPEG. */
+    maxDimension: 2560,
+    jpegQuality: 0.86,
+    /** Must not exceed max_bytes in the database (10 MB by default). */
+    maxStoredMB: 10,
+    /** Public gallery: photos per page and auto-refresh interval. */
+    pageSize: 24,
+    refreshSeconds: 60,
+  },
+
   /* ── Effects ────────────────────────────────────────────────────────────── */
   effects: {
     /** Gentle falling petals (automatically off for reduced-motion users). */

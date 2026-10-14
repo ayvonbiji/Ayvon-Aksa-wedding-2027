@@ -10,6 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import QRCode from 'qrcode';
+import { PDFDocument } from 'pdf-lib';
 import { Resvg } from '@resvg/resvg-js';
 import * as o from '../src/art/ornaments.js';
 import { monogram, wordmark, fonts, centred } from './logo-art.mjs';
@@ -97,27 +98,92 @@ png(touch, pub('apple-touch-icon.png'), 180);
   png(doc(`0 0 ${W} ${H}`, s, { w: W, h: H }), pub('og-image.png'));
 }
 
-/* 9. QR code for the public site */
-{
-  const url = wedding.siteUrl;
+/* 9. Two QR codes: A = wedding website, B = guest photo upload */
+const CAMERA = 'M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Zm8 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z';
+/** QR as SVG markup (inner content + size). Level H, 4-module quiet zone. */
+function qrInner(url, variant, cell = 10) {
   const qr = QRCode.create(url, { errorCorrectionLevel: 'H' });
   const n = qr.modules.size;
-  const quiet = 4, cell = 10, size = (n + quiet * 2) * cell;
-  let rects = '';
+  const quiet = 4, size = (n + quiet * 2) * cell;
+  let d = '';
   for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
-    if (qr.modules.get(x, y)) rects += `M${(x + quiet) * cell} ${(y + quiet) * cell}h${cell}v${cell}h-${cell}z`;
+    if (qr.modules.get(x, y)) d += `M${(x + quiet) * cell} ${(y + quiet) * cell}h${cell}v${cell}h-${cell}z`;
   }
-  // Centre badge ≈ 18% of the width — well inside level-H error correction (30%)
-  const badge = Math.round((n * cell) * 0.2);
+  // Centre badge = 20% of the symbol width (4% of its area) — far inside level-H's 30% recovery
+  const badge = n * cell * 0.2;
   const c = size / 2;
-  const centre = `<rect x="${c - badge / 2 - 6}" y="${c - badge / 2 - 6}" width="${badge + 12}" height="${badge + 12}" rx="${badge * 0.2}" fill="#FFFFFF"/>` +
-    `<g transform="translate(${c} ${c}) scale(${badge / 300})">${monogram({ ornaments: false, color: '#4A3B36' })}</g>`;
-  const qrSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}"><title>QR code: ${url}</title>` +
-    `<rect width="${size}" height="${size}" fill="#FFFFFF"/><path d="${rects}" fill="#3A2E2A"/>${centre}</svg>`;
-  write(pub('qr', 'wedding-qr.svg'), qrSvg);
-  png(qrSvg, pub('qr', 'wedding-qr.png'), 1200);
-  fs.writeFileSync(pub('qr', 'README.txt'), `This QR code opens: ${url}\nRegenerate with  npm run assets  after changing siteUrl in src/config/wedding.ts\n`);
-  console.log('QR →', url);
+  let centre = `<rect x="${c - badge / 2 - cell / 2}" y="${c - badge / 2 - cell / 2}" width="${badge + cell}" height="${badge + cell}" rx="${badge * 0.2}" fill="#FFFFFF"/>`;
+  centre += variant === 'site'
+    ? `<g transform="translate(${c} ${c}) scale(${badge / 300})">${monogram({ ornaments: false, color: '#3A2E2A' })}</g>`
+    : `<path d="${CAMERA}" transform="translate(${c - badge * 0.38} ${c - badge * 0.38}) scale(${(badge * 0.76) / 24})" fill="none" stroke="#3A2E2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`;
+  return { inner: `<rect width="${size}" height="${size}" fill="#FFFFFF"/><path d="${d}" fill="#3A2E2A" shape-rendering="crispEdges"/>${centre}`, size };
 }
 
-console.log('✓ Brand assets, favicons, social image and QR code written to /public');
+const uploadUrl = new URL(wedding.memories.uploadPath, wedding.siteUrl).href;
+const QRS = [
+  { key: 'site', url: wedding.siteUrl, file: 'ayvon-aksa-wedding-website-qr', label: 'Scan to Visit Our Wedding Website', heading: ['Visit Our', 'Wedding Website'] },
+  { key: 'upload', url: uploadUrl, file: 'ayvon-aksa-upload-memories-qr', label: 'Scan to Upload Wedding Memories', heading: ['Share Your', 'Wedding Memories'] },
+];
+for (const name of ['wedding-qr.svg', 'wedding-qr.png', 'README.txt']) fs.rmSync(pub('qr', name), { force: true });
+for (const q of QRS) {
+  const { inner, size } = qrInner(q.url, q.key);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}"><title>${q.label}: ${q.url}</title>${inner}</svg>`;
+  write(pub('qr', `${q.file}.svg`), svg);
+  png(svg, pub('qr', `${q.file}.png`), 2000); // 2000 px ≈ 6.7 in at 300 dpi
+  console.log(`QR ${q.key.padEnd(6)} → ${q.url}`);
+}
+
+/* 10. Printable QR card — 5 × 7 in portrait at 300 dpi (1500 × 2100 px) */
+{
+  const W = 1500, H = 2100;
+  const card = [];
+  card.push(`<rect width="${W}" height="${H}" fill="#FCF8F2"/>`);
+  card.push(`<radialGradient id="cw" cx=".5" cy=".42" r=".75"><stop offset="0" stop-color="#FFFDF9"/><stop offset="1" stop-color="#F6E3DD"/></radialGradient><rect width="${W}" height="${H}" fill="url(#cw)"/>`);
+  card.push(`<rect x="56" y="56" width="${W - 112}" height="${H - 112}" fill="none" stroke="#BC9A60" stroke-width="4"/>`);
+  card.push(`<rect x="76" y="76" width="${W - 152}" height="${H - 152}" fill="none" stroke="#BC9A60" stroke-width="1.6"/>`);
+  card.push(o.cluster(110, 110, 210, { dir: 45, seed: 1 }), o.cluster(W - 110, H - 110, 210, { dir: 225, seed: 2 }));
+  card.push(o.sprig(W - 120, 150, 230, { dir: 150, curl: -0.25 }), o.sprig(110, H - 130, 170, { dir: -12, curl: -0.25 }));
+  card.push(`<g transform="translate(${W / 2} 300) scale(.95)">${monogram()}</g>`);
+  const wmc = wordmark({ size: 150 });
+  card.push(`<g transform="translate(${(W - wmc.w) / 2} 455)">${wmc.svg}</g>`);
+  card.push(`<path d="${centred(fonts.serifRegular, `${wedding.groom.full}  &  ${wedding.bride.full}`, 44, W / 2, 712)}" fill="#4A3B36"/>`);
+  card.push(`<path d="${centred(fonts.label, wedding.ceremony.shortDateLabel.toUpperCase(), 34, W / 2, 782, 12)}" fill="#7E5F2E"/>`);
+  card.push(`<g transform="translate(${W / 2 - 220} 812) scale(1.4667)">${o.divider(300)}</g>`);
+  // two QR codes, clearly separated
+  const qs = 560, gap = 140, top = 1030;
+  QRS.forEach((q, i) => {
+    const x = (W - (qs * 2 + gap)) / 2 + i * (qs + gap);
+    const { inner, size } = qrInner(q.url, q.key);
+    q.heading.forEach((line, li) => card.push(`<path d="${centred(fonts.script, line, 58, x + qs / 2, top - 112 + li * 64)}" fill="#8E5A61"/>`));
+    card.push(`<rect x="${x - 14}" y="${top - 14}" width="${qs + 28}" height="${qs + 28}" rx="22" fill="#FFFFFF" stroke="#BC9A60" stroke-width="3"/>`);
+    card.push(`<g transform="translate(${x} ${top}) scale(${qs / size})">${inner}</g>`);
+    card.push(`<path d="${centred(fonts.label, q.label.toUpperCase(), 22, x + qs / 2, top + qs + 70, 3.5)}" fill="${i ? '#A8656E' : '#7E5F2E'}"/>`);
+    card.push(`<path d="${centred(fonts.serifItalic, q.url.replace(/^https?:\/\//, '').replace(/\/$/, ''), 24, x + qs / 2, top + qs + 112)}" fill="#66544B"/>`);
+  });
+  card.push(`<line x1="${W / 2}" y1="${top + 20}" x2="${W / 2}" y2="${top + qs - 20}" stroke="#D9C3A0" stroke-width="2" stroke-dasharray="4 10"/>`);
+  card.push(`<path d="${centred(fonts.serifItalic, 'Please scan, celebrate with us, and share the moments you capture.', 38, W / 2, 1810)}" fill="#4A3B36"/>`);
+  card.push(`<path d="${centred(fonts.label, `${wedding.ceremony.timeLabel}  ·  ${wedding.ceremony.venue.toUpperCase()}, ${wedding.ceremony.town.toUpperCase()}`, 24, W / 2, 1872, 4)}" fill="#7E5F2E"/>`);
+  const cardSvg = doc(`0 0 ${W} ${H}`, `<title>${names} — QR card</title>${card.join('')}`, { w: W, h: H });
+  write(pub('qr', 'ayvon-aksa-qr-card.svg'), cardSvg);
+  const cardPng = new Resvg(cardSvg, { fitTo: { mode: 'width', value: W } }).render().asPng();
+  fs.writeFileSync(pub('qr', 'ayvon-aksa-qr-card.png'), cardPng);
+  const pdf = await PDFDocument.create();
+  pdf.setTitle(`${wedding.groom.first} & ${wedding.bride.first} — wedding QR card`);
+  pdf.setCreator('Ayvon & Aksa wedding website');
+  const page = pdf.addPage([360, 504]); // 5 × 7 in
+  const img = await pdf.embedPng(cardPng);
+  page.drawImage(img, { x: 0, y: 0, width: 360, height: 504 });
+  // A4 sheet with two cards side by side for home printing
+  const a4 = pdf.addPage([842, 595]); // A4 landscape
+  const cw = 360 * 0.98, ch = 504 * 0.98;
+  [0, 1].forEach((i) => a4.drawImage(img, { x: (842 - 2 * cw - 30) / 2 + i * (cw + 30), y: (595 - ch) / 2, width: cw, height: ch }));
+  fs.writeFileSync(pub('qr', 'ayvon-aksa-qr-card.pdf'), await pdf.save());
+}
+
+fs.writeFileSync(pub('qr', 'QR-DESTINATIONS.txt'),
+  `Ayvon & Aksa — wedding QR codes\n\n` +
+  QRS.map((q) => `${q.label}\n  ${q.url}\n  files: ${q.file}.png / ${q.file}.svg`).join('\n\n') +
+  `\n\nPrintable card: ayvon-aksa-qr-card.pdf (page 1: 5×7 in card, page 2: two cards on A4) and ayvon-aksa-qr-card.png (1500×2100, 300 dpi).\n` +
+  `These files are regenerated by  npm run assets  (also part of npm run build) from siteUrl and memories.uploadPath in src/config/wedding.ts.\n`);
+
+console.log('✓ Brand assets, favicons, social image, QR codes and QR card written to /public');

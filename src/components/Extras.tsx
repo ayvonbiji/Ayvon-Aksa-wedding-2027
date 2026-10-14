@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import QRCode from 'qrcode';
 import { wedding } from '../config/wedding';
 import { asset, prefersReducedMotion, shareMessage, whatsappUrl } from '../lib/assets';
 import { Art, art, parchment } from './Art';
 import { Reveal } from './Reveal';
 import { Logo } from './Logo';
 import { Icon } from './Icon';
+import { QrCode } from './QrCode';
+import { uploadPageUrl } from '../lib/memories';
 
 /* ── Bible verse ─────────────────────────────────────────────────────────── */
 export function Verse() {
@@ -95,72 +96,21 @@ export function GuestAndShare() {
   );
 }
 
-/* ── QR code (always generated from wedding.siteUrl) ─────────────────────── */
-const QR_FG = '#3A2E2A';
-
+/* ── Both QR codes + printable card ─────────────────────────────────────── */
 function QrCard() {
-  const url = wedding.siteUrl;
-  const svg = useMemo(() => {
-    const qr = QRCode.create(url, { errorCorrectionLevel: 'H' });
-    const n = qr.modules.size;
-    const q = 4;
-    let d = '';
-    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (qr.modules.get(x, y)) d += `M${x + q} ${y + q}h1v1h-1z`;
-    return { d, size: n + q * 2, n };
-  }, [url]);
-
-  const downloadPng = async () => {
-    const scale = 24;
-    const px = svg.size * scale;
-    const canvas = document.createElement('canvas');
-    canvas.width = canvas.height = px;
-    const ctx = canvas.getContext('2d')!;
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(0, 0, px, px);
-    ctx.fillStyle = QR_FG;
-    ctx.fill(new Path2D(svg.d.replace(/(\d+)/g, (m) => String(+m * scale))));
-    // centre badge
-    const badge = svg.n * scale * 0.2;
-    const c = px / 2;
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    ctx.roundRect(c - badge / 2 - scale / 2, c - badge / 2 - scale / 2, badge + scale, badge + scale, badge * 0.2);
-    ctx.fill();
-    await new Promise<void>((res) => {
-      const img = new Image();
-      img.onload = () => (ctx.drawImage(img, c - badge / 2, c - badge / 2, badge, badge), res());
-      img.onerror = () => res();
-      img.src = asset('brand/monogram-mono.svg');
-    });
-    const a = document.createElement('a');
-    a.href = canvas.toDataURL('image/png');
-    a.download = 'ayvon-aksa-wedding-qr.png';
-    a.click();
-  };
-
-  const badge = svg.n * 0.2;
-  const c = svg.size / 2;
   return (
-    <div className="qr">
-      <div className="qr__code">
-        <svg viewBox={`0 0 ${svg.size} ${svg.size}`} role="img" aria-label={`QR code that opens ${url}`} shapeRendering="crispEdges">
-          <rect width={svg.size} height={svg.size} fill="#fff" />
-          <path d={svg.d} fill={QR_FG} />
-          <rect x={c - badge / 2 - 0.5} y={c - badge / 2 - 0.5} width={badge + 1} height={badge + 1} rx={badge * 0.2} fill="#fff" />
-          <image href={asset('brand/monogram-mono.svg')} x={c - badge / 2} y={c - badge / 2} width={badge} height={badge} />
-        </svg>
+    <div className="qr-pair">
+      <div className="qr-pair__codes">
+        <QrCode url={wedding.siteUrl} label="Scan to Visit Our Wedding Website" variant="site" downloads />
+        <QrCode url={uploadPageUrl()} label="Scan to Upload Wedding Memories" variant="upload" downloads />
       </div>
-      <div className="qr__text">
-        <p className="label">Scan to open our invitation</p>
-        <p className="qr__url">{url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</p>
-        <div className="qr__actions">
-          <button type="button" className="btn btn--ghost" onClick={downloadPng}>
-            <Icon name="download" /> Download PNG
-          </button>
-          <a className="btn btn--ghost" href={asset('qr/wedding-qr.svg')} download="ayvon-aksa-wedding-qr.svg">
-            <Icon name="download" /> Download SVG
-          </a>
-        </div>
+      <div className="qr-pair__print">
+        <a className="btn btn--pill" href={asset('qr/ayvon-aksa-qr-card.pdf')} download>
+          <Icon name="download" /> Printable QR card (PDF)
+        </a>
+        <a className="btn btn--ghost" href={asset('qr/ayvon-aksa-qr-card.png')} download>
+          <Icon name="download" /> Card as image
+        </a>
       </div>
     </div>
   );
@@ -178,6 +128,9 @@ export function Footer() {
         <Art {...art.divider} className="divider" />
         <p className="label footer__date">{wedding.ceremony.shortDateLabel}</p>
         <p className="footer__tagline">{wedding.footer.tagline}</p>
+        <a className="footer__link" href={uploadPageUrl()}>
+          <Icon name="camera" /> Share your wedding photos
+        </a>
       </Reveal>
     </footer>
   );
