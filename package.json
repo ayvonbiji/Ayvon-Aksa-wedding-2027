@@ -1,0 +1,40 @@
+{
+  "name": "ayvon-aksa-wedding-2027",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Digital wedding invitation for Ayvon Joseph Biji & Aksa Saji Kunnel — 23 August 2027",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run assets && tsc -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "assets": "node --experimental-strip-types --no-warnings scripts/build-assets.mjs",
+    "images": "node scripts/optimize-images.mjs"
+  },
+  "dependencies": {
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/great-vibes": "^5.3.0",
+    "@fontsource/jost": "^5.3.0",
+    "qrcode": "^1.5.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "@types/node": "^26.6.5",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "jsqr": "^1.4.0",
+    "opentype.js": "^2.0.0",
+    "sharp": "^0.35.5",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.21",
+    "vitest": "^2.1.9"
+  },
+  "engines": {
+    "node": ">=22.6"
+  }
+}
