@@ -15,50 +15,54 @@
 const f = (n) => Math.round(n * 100) / 100;
 
 export const palette = {
-  ivory: '#FCF8F2',
-  cream: '#F6EDE2',
-  blush: '#F3DCD8',
-  rose: '#D99BA0',
-  roseDeep: '#B9727A',
-  mauve: '#8E5A61',
-  gold: '#B8955A',
-  goldLight: '#E2CB97',
-  goldDeep: '#8F6D36',
-  sage: '#9AA78A',
-  sageDeep: '#6F7E62',
-  ink: '#4A3B36',
+  ivory: '#FBF6EE',
+  champagne: '#F3E6D0',
+  blush: '#F2D9D6',
+  dustyRose: '#C98B92',
+  wine: '#8A2E45',
+  burgundy: '#6B1E33',
+  burgundyDeep: '#4A1222',
+  gold: '#B08A4A',
+  goldLight: '#D9BE86',
+  goldDeep: '#7A5A24',
+  sage: '#7D8F6E',
+  sageDeep: '#4F6046',
+  ink: '#2F2224',
 };
 
 /** Shared gradients. */
 export function defs(p = 'aa') {
   return `<defs>
   <linearGradient id="${p}-gold" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#EAD7A6"/><stop offset=".35" stop-color="#C9A866"/>
-    <stop offset=".6" stop-color="#A9843F"/><stop offset=".85" stop-color="#D8BE82"/><stop offset="1" stop-color="#9C7A3E"/>
+    <stop offset="0" stop-color="#E8D3A2"/><stop offset=".3" stop-color="#C4A061"/>
+    <stop offset=".55" stop-color="#94702F"/><stop offset=".8" stop-color="#D2B377"/><stop offset="1" stop-color="#8A6629"/>
   </linearGradient>
   <linearGradient id="${p}-goldline" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#CDB076"/><stop offset="1" stop-color="#A8864C"/>
+    <stop offset="0" stop-color="#C9A86A"/><stop offset="1" stop-color="#9C7838"/>
+  </linearGradient>
+  <linearGradient id="${p}-wine" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#A13D55"/><stop offset=".5" stop-color="#7A2239"/><stop offset="1" stop-color="#561428"/>
   </linearGradient>
   <radialGradient id="${p}-petal" cx=".5" cy=".9" r=".9">
-    <stop offset="0" stop-color="#C9848B"/><stop offset=".55" stop-color="#E5B3B4"/><stop offset="1" stop-color="#F8E4E1"/>
+    <stop offset="0" stop-color="#A9566A"/><stop offset=".55" stop-color="#D49AA2"/><stop offset="1" stop-color="#F4DCDA"/>
   </radialGradient>
   <radialGradient id="${p}-petalDeep" cx=".5" cy=".9" r=".9">
-    <stop offset="0" stop-color="#A9616B"/><stop offset=".6" stop-color="#D3959A"/><stop offset="1" stop-color="#EDC7C6"/>
+    <stop offset="0" stop-color="#5E1427"/><stop offset=".55" stop-color="#8E2C44"/><stop offset="1" stop-color="#C46E7F"/>
   </radialGradient>
   <radialGradient id="${p}-petalIvory" cx=".5" cy=".9" r=".9">
-    <stop offset="0" stop-color="#E9D3BE"/><stop offset=".6" stop-color="#F6EADF"/><stop offset="1" stop-color="#FFFBF6"/>
+    <stop offset="0" stop-color="#D9BF93"/><stop offset=".6" stop-color="#F1E3C8"/><stop offset="1" stop-color="#FFFAF0"/>
   </radialGradient>
   <linearGradient id="${p}-leaf" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#B7C2A6"/><stop offset="1" stop-color="#7F8F70"/>
+    <stop offset="0" stop-color="#9DAD8C"/><stop offset="1" stop-color="#53654A"/>
   </linearGradient>
   <linearGradient id="${p}-ribbon" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#F4D3D2"/><stop offset=".5" stop-color="#DFA4A8"/><stop offset="1" stop-color="#C47F87"/>
+    <stop offset="0" stop-color="#C26A7C"/><stop offset=".5" stop-color="#8E2C44"/><stop offset="1" stop-color="#651830"/>
   </linearGradient>
   <linearGradient id="${p}-ribbonDark" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#C98990"/><stop offset="1" stop-color="#A9636D"/>
+    <stop offset="0" stop-color="#7C2338"/><stop offset="1" stop-color="#4E1023"/>
   </linearGradient>
   <linearGradient id="${p}-paper" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#FBF3E6"/><stop offset="1" stop-color="#F1E2CB"/>
+    <stop offset="0" stop-color="#FBF3E4"/><stop offset="1" stop-color="#EFDDBE"/>
   </linearGradient>
 </defs>`;
 }
@@ -70,9 +74,9 @@ const petalPath = (r, w = 0.62) =>
 /** A layered rose seen from above. tone: 'blush' | 'deep' | 'ivory' */
 export function rose(x, y, r, { tone = 'blush', rot = 0, p = 'aa' } = {}) {
   const fill = tone === 'deep' ? `${p}-petalDeep` : tone === 'ivory' ? `${p}-petalIvory` : `${p}-petal`;
-  const edge = tone === 'ivory' ? '#E2C9AF' : tone === 'deep' ? '#B06C76' : '#D49BA0';
-  const core = tone === 'ivory' ? '#C9A788' : tone === 'deep' ? '#86434E' : '#AD6872';
-  const shade = tone === 'ivory' ? '#D8BFA4' : tone === 'deep' ? '#9C5560' : '#C4858D';
+  const edge = tone === 'ivory' ? '#D9C09A' : tone === 'deep' ? '#7A2239' : '#C08690';
+  const core = tone === 'ivory' ? '#B8955E' : tone === 'deep' ? '#3E0C1A' : '#8E3A4E';
+  const shade = tone === 'ivory' ? '#CDB083' : tone === 'deep' ? '#4A1222' : '#A85E6E';
   const rings = [
     { n: 7, len: 1.0, off: 0, w: 0.74 },
     { n: 6, len: 0.8, off: 27, w: 0.7 },
@@ -90,7 +94,7 @@ export function rose(x, y, r, { tone = 'blush', rot = 0, p = 'aa' } = {}) {
       const a = (360 / ring.n) * i + ring.off + (rnd() - 0.5) * 14;
       const L = r * ring.len * (0.92 + rnd() * 0.14);
       s += `<path d="${petalPath(L, ring.w)}" transform="rotate(${f(a)})" fill="url(#${fill})" stroke="${edge}" stroke-width="${f(Math.max(r * 0.018, 0.35))}"/>`;
-      s += `<path d="M${f(-L * 0.4)} ${f(-L * 0.78)} Q0 ${f(-L * 1.0)} ${f(L * 0.4)} ${f(-L * 0.78)}" transform="rotate(${f(a)})" fill="none" stroke="#FFF6F3" stroke-width="${f(Math.max(r * 0.03, 0.4))}" opacity=".55" stroke-linecap="round"/>`;
+      s += `<path d="M${f(-L * 0.4)} ${f(-L * 0.78)} Q0 ${f(-L * 1.0)} ${f(L * 0.4)} ${f(-L * 0.78)}" transform="rotate(${f(a)})" fill="none" stroke="#FFF6F3" stroke-width="${f(Math.max(r * 0.03, 0.4))}" opacity="${tone === 'deep' ? 0.28 : 0.55}" stroke-linecap="round"/>`;
     }
   });
   s += `<path d="M${f(-r * 0.1)} ${f(r * 0.02)} C${f(-r * 0.1)} ${f(-r * 0.13)} ${f(r * 0.12)} ${f(-r * 0.13)} ${f(r * 0.11)} ${f(r * 0.02)} C${f(r * 0.1)} ${f(r * 0.13)} ${f(-r * 0.05)} ${f(r * 0.12)} ${f(-r * 0.04)} ${f(r * 0.03)}" fill="none" stroke="${core}" stroke-width="${f(Math.max(r * 0.04, 0.5))}" stroke-linecap="round"/>`;
@@ -107,7 +111,7 @@ export function leaf(x, y, len, rot = 0, { p = 'aa', light = false } = {}) {
 }
 
 /** Small five-petal blossom (filler flower). */
-export function blossom(x, y, r, { color = '#FFF8F3', center = '#E3C27E' } = {}) {
+export function blossom(x, y, r, { color = '#FFF8F1', center = '#C9A158' } = {}) {
   let s = `<g transform="translate(${f(x)} ${f(y)})">`;
   for (let i = 0; i < 5; i++) {
     s += `<ellipse cx="0" cy="${f(-r * 0.55)}" rx="${f(r * 0.38)}" ry="${f(r * 0.55)}" transform="rotate(${i * 72})" fill="${color}" stroke="#E8CFC9" stroke-width="${f(Math.max(r * 0.05, 0.3))}"/>`;
@@ -151,7 +155,7 @@ export function cluster(x, y, size, { dir = 0, p = 'aa', seed = 1 } = {}) {
   g += bud(0.52 * s, -0.34 * s, 0.1 * s, 55, { p });
   g += rose(-0.34 * s, 0.1 * s, 0.27 * s, { tone: seed % 3 === 2 ? 'ivory' : 'blush', rot: seed * 13, p });
   g += rose(0.34 * s, 0.12 * s, 0.25 * s, { tone: 'ivory', rot: seed * 29, p });
-  g += rose(0, -0.1 * s, 0.33 * s, { tone: seed % 2 ? 'deep' : 'blush', rot: seed * 41, p });
+  g += rose(0, -0.1 * s, 0.33 * s, { tone: 'deep', rot: seed * 41, p });
   g += blossom(-0.02 * s, 0.34 * s, 0.09 * s);
   g += blossom(0.56 * s, 0.26 * s, 0.07 * s, { color: '#F7DEDC' });
   g += blossom(-0.58 * s, 0.3 * s, 0.07 * s);
@@ -164,7 +168,7 @@ export function cluster(x, y, size, { dir = 0, p = 'aa', seed = 1 } = {}) {
 export function sprig(x, y, len, { dir = 0, p = 'aa', flowers = true, curl = 0.25 } = {}) {
   const c = len * curl;
   let g = `<g transform="translate(${f(x)} ${f(y)}) rotate(${f(dir)})">`;
-  g += `<path d="M0 0 Q${f(len * 0.5)} ${f(-c)} ${f(len)} 0" fill="none" stroke="#8C9A7C" stroke-width="${f(Math.max(len * 0.012, 0.6))}" stroke-linecap="round"/>`;
+  g += `<path d="M0 0 Q${f(len * 0.5)} ${f(-c)} ${f(len)} 0" fill="none" stroke="#6E8061" stroke-width="${f(Math.max(len * 0.012, 0.6))}" stroke-linecap="round"/>`;
   const n = 6;
   for (let i = 1; i <= n; i++) {
     const t = i / (n + 1);
@@ -175,7 +179,7 @@ export function sprig(x, y, len, { dir = 0, p = 'aa', flowers = true, curl = 0.2
   }
   if (flowers) {
     g += blossom(len, 0, len * 0.06);
-    g += blossom(len * 0.55, -c * 0.6, len * 0.045, { color: '#F7DEDC' });
+    g += blossom(len * 0.55, -c * 0.6, len * 0.045, { color: '#F1D3D3' });
   }
   return g + '</g>';
 }
@@ -188,13 +192,13 @@ export function bow(x, y, w, { p = 'aa', tails = 1 } = {}) {
     `<g transform="scale(1 ${tails})"><path d="M-4 4 C-14 26 -22 44 -34 62 L-26 60 L-22 70 C-12 50 -4 30 2 8Z" fill="url(#${p}-ribbonDark)"/>` +
     `<path d="M4 4 C14 26 22 44 34 62 L26 60 L22 70 C12 50 4 30 -2 8Z" fill="url(#${p}-ribbonDark)"/></g>` +
     // loops
-    `<path d="M-2 0 C-20 -26 -52 -30 -50 -6 C-48 12 -20 10 -2 2Z" fill="url(#${p}-ribbon)" stroke="#C5878E" stroke-width="1"/>` +
-    `<path d="M2 0 C20 -26 52 -30 50 -6 C48 12 20 10 2 2Z" fill="url(#${p}-ribbon)" stroke="#C5878E" stroke-width="1"/>` +
-    `<path d="M-8 -2 C-22 -16 -38 -18 -40 -8" stroke="#FBE8E6" stroke-width="2" fill="none" opacity=".8" stroke-linecap="round"/>` +
-    `<path d="M8 -2 C22 -16 38 -18 40 -8" stroke="#FBE8E6" stroke-width="2" fill="none" opacity=".8" stroke-linecap="round"/>` +
+    `<path d="M-2 0 C-20 -26 -52 -30 -50 -6 C-48 12 -20 10 -2 2Z" fill="url(#${p}-ribbon)" stroke="#5E1427" stroke-width="1"/>` +
+    `<path d="M2 0 C20 -26 52 -30 50 -6 C48 12 20 10 2 2Z" fill="url(#${p}-ribbon)" stroke="#5E1427" stroke-width="1"/>` +
+    `<path d="M-8 -2 C-22 -16 -38 -18 -40 -8" stroke="#E9B5BE" stroke-width="2" fill="none" opacity=".55" stroke-linecap="round"/>` +
+    `<path d="M8 -2 C22 -16 38 -18 40 -8" stroke="#E9B5BE" stroke-width="2" fill="none" opacity=".55" stroke-linecap="round"/>` +
     // knot
     `<rect x="-8" y="-8" width="16" height="14" rx="6" fill="url(#${p}-ribbonDark)"/>` +
-    `<path d="M-4 -5 Q0 -7 4 -5" stroke="#F2C9CB" stroke-width="1.5" fill="none"/>` +
+    `<path d="M-4 -5 Q0 -7 4 -5" stroke="#C26A7C" stroke-width="1.5" fill="none"/>` +
     '</g>';
 }
 

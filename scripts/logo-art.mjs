@@ -19,8 +19,11 @@ export const fonts = {
   serif: load('@fontsource/cormorant-garamond', 'cormorant-garamond-latin-600-normal.woff'),
   serifItalic: load('@fontsource/cormorant-garamond', 'cormorant-garamond-latin-500-italic.woff'),
   serifRegular: load('@fontsource/cormorant-garamond', 'cormorant-garamond-latin-500-normal.woff'),
-  script: load('@fontsource/great-vibes', 'great-vibes-latin-400-normal.woff'),
+  script: load('@fontsource/corinthia', 'corinthia-latin-700-normal.woff'),
   label: load('@fontsource/jost', 'jost-latin-500-normal.woff'),
+  roman: load('@fontsource/cinzel', 'cinzel-latin-600-normal.woff'),
+  romanBold: load('@fontsource/cinzel', 'cinzel-latin-700-normal.woff'),
+  names: load('@fontsource/corinthia', 'corinthia-latin-700-normal.woff'),
 };
 
 /** Serialise path commands (opentype's toPathData mis-prints some floats as NaN). */
@@ -84,72 +87,81 @@ export function centred(font, text, size, cx, y, letterSpacing = 0) {
 }
 
 /**
- * Interlocked A & A monogram glyphs, centred at (0,0), height ≈ 200.
- * Returns path data for: serif A, script A, ampersand.
+ * Monogram glyphs: two Roman capital "A"s (Ayvon, Aksa) interlaced, with a
+ * script ampersand nestled in the valley between their peaks.
+ * Centred at (0,0) in a 300×300 box. Returns path data.
  */
 export function monogramGlyphs() {
-  // Upright serif "A" (Ayvon) interlaced with an italic serif "A" (Aksa)
-  const size = 190;
-  const A1 = textPath(fonts.serif, 'A', size, 0, 0).bbox;
-  const A2 = textPath(fonts.serifItalic, 'A', size * 1.04, 0, 0).bbox;
-  const w1 = A1.x2 - A1.x1, w2 = A2.x2 - A2.x1;
-  const overlap = w1 * 0.42;
-  const total = w1 + w2 - overlap;
-  const x1 = -total / 2 - A1.x1;
-  const x2 = -total / 2 + w1 - overlap - A2.x1;
-  const h = A1.y2 - A1.y1;
-  const base = h / 2 - 6;
-  const serif = textPath(fonts.serif, 'A', size, x1, base).d;
-  const script = textPath(fonts.serifItalic, 'A', size * 1.04, x2, base + 10).d;
-  const amp = centred(fonts.script, '&', 62, 2, -h / 2 - 2);
-  return { serif, script, amp };
+  const size = 200;
+  const f = fonts.romanBold;
+  const bb = textPath(f, 'A', size, 0, 0).bbox;
+  const w = bb.x2 - bb.x1, h = bb.y2 - bb.y1;
+  const overlap = w * 0.34;
+  const total = w * 2 - overlap;
+  const base = h / 2 + 6;                       // baseline so the pair is vertically centred
+  const left = textPath(f, 'A', size, -total / 2 - bb.x1, base).d;
+  const right = textPath(f, 'A', size, -total / 2 + w - overlap - bb.x1, base).d;
+  const ampSize = 92;
+  const amp = centred(fonts.names, '&', ampSize, 0, base - h * 0.62);
+  return { left, right, amp, w: total, h };
 }
 
 /** Primary monogram (inner content; viewBox -150 -150 300 300). */
 export function monogram({ p = 'aa', color = null, ornaments = true } = {}) {
   const g = monogramGlyphs();
   const gold = color || `url(#${p}-gold)`;
+  const wine = color || `url(#${p}-wine)`;
   const line = color || `url(#${p}-goldline)`;
+  const knock = color && color !== '#FFFFFF' ? '#FFFFFF' : color ? '#3A2E2A' : '#FFF9F0';
   let s = '';
   if (ornaments) {
-    s += `<circle r="128" fill="none" stroke="${line}" stroke-width="2"/>`;
-    s += `<circle r="120" fill="none" stroke="${line}" stroke-width=".8"/>`;
-    s += `<circle r="135" fill="none" stroke="${line}" stroke-width=".6" stroke-dasharray="1 5" stroke-linecap="round"/>`;
-    if (!color) {
-      s += o.sprig(-30, 118, 92, { dir: 192, p, curl: -0.3 });
-      s += o.sprig(30, 118, 92, { dir: -12, p, curl: 0.3 });
-      s += o.rose(0, 122, 17, { tone: 'blush', p });
-      s += o.rose(-20, 128, 10, { tone: 'ivory', p, rot: 30 });
-      s += o.rose(20, 128, 10, { tone: 'ivory', p, rot: 60 });
-    } else {
-      s += `<g fill="${color}">${[-1, 1].map((sd) => [0, 1, 2, 3].map((i) => `<ellipse cx="${sd * (22 + i * 16)}" cy="${124 - i * i * 2.4}" rx="7" ry="3" transform="rotate(${sd * (12 + i * 9)} ${sd * (22 + i * 16)} ${124 - i * i * 2.4})"/>`).join('')).join('')}<circle cy="124" r="5"/></g>`;
+    s += `<circle r="132" fill="none" stroke="${line}" stroke-width="2.4"/>`;
+    s += `<circle r="124" fill="none" stroke="${line}" stroke-width=".9"/>`;
+    s += `<circle r="140" fill="none" stroke="${line}" stroke-width=".7" stroke-dasharray="1 5" stroke-linecap="round"/>`;
+    // laurel wreath around the lower half
+    for (const side of [-1, 1]) {
+      for (let i = 0; i < 9; i++) {
+        const a = (Math.PI / 2) + side * (0.22 + i * 0.14);
+        const r = 128 + (i % 2 ? 6 : -4);
+        const x = Math.cos(a) * r, y = Math.sin(a) * r;
+        // point the leaf along the wreath (direction of travel), tilted alternately in/out
+        const rot = (a * 180) / Math.PI + side * 90 + (i % 2 ? 22 : -22) * side;
+        s += color
+          ? `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="8" ry="3.2" transform="rotate(${rot.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)})" fill="${color}"/>`
+          : o.leaf(x, y, 17, rot, { p });
+      }
     }
-    s += `<path d="M0 -136 L5 -128 L0 -120 L-5 -128Z" fill="${gold}"/>`;
+    s += color ? `<circle cy="132" r="6" fill="${color}"/>` : o.rose(0, 132, 13, { tone: 'deep', p }) + o.rose(-16, 128, 8, { tone: 'ivory', p }) + o.rose(16, 128, 8, { tone: 'ivory', p });
+    s += `<path d="M0 -142 L6 -132 L0 -122 L-6 -132Z" fill="${gold}"/>`;
   }
-  s += `<path d="${g.serif}" fill="${gold}"/>`;
-  s += `<path d="${g.script}" fill="${gold}" stroke="${color ? '#FFFFFF' : '#FFFDF8'}" stroke-width="3" paint-order="stroke"/>`;
-  s += `<path d="${g.amp}" fill="${gold}"/>`;
+  // left A (gold), right A (wine) woven over it with a thin knock-out edge
+  s += `<g transform="${ornaments ? 'translate(0 -10) scale(.78)' : 'scale(.98)'}">`;
+  s += `<path d="${g.left}" fill="${gold}"/>`;
+  s += `<path d="${g.right}" fill="${wine}" stroke="${knock}" stroke-width="4" paint-order="stroke" stroke-linejoin="round"/>`;
+  s += `<path d="${g.amp}" fill="${gold}" stroke="${knock}" stroke-width="3" paint-order="stroke"/>`;
+  s += '</g>';
   return s;
 }
 
 /** Wordmark "Ayvon & Aksa" (inner content), returns { svg, w, h }. */
 export function wordmark({ p = 'aa', color = null, size = 120 } = {}) {
-  const ink = color || `url(#${p}-gold)`;
-  const a = textPath(fonts.script, 'Ayvon', size, 0, 0);
-  const amp = textPath(fonts.serifItalic, '&', size * 0.62, 0, 0);
-  const b = textPath(fonts.script, 'Aksa', size, 0, 0);
-  const gap = size * 0.16;
+  const ink = color || `url(#${p}-wine)`;
+  const f = fonts.names;
+  const a = textPath(f, 'Ayvon', size, 0, 0);
+  const amp = textPath(fonts.serifItalic, '&', size * 0.5, 0, 0);
+  const b = textPath(f, 'Aksa', size, 0, 0);
+  const gap = size * 0.14;
   const total = a.width + gap + amp.width + gap + b.width;
-  const pad = size * 0.25;
-  const base = size * 0.95;
+  const pad = size * 0.22;
+  const base = size * 0.92;
   let x = pad;
-  const pa = textPath(fonts.script, 'Ayvon', size, x, base).d;
+  const pa = textPath(f, 'Ayvon', size, x, base).d;
   x += a.width + gap;
-  const pm = textPath(fonts.serifItalic, '&', size * 0.62, x, base - size * 0.02).d;
+  const pm = textPath(fonts.serifItalic, '&', size * 0.5, x, base - size * 0.04).d;
   x += amp.width + gap;
-  const pb = textPath(fonts.script, 'Aksa', size, x, base).d;
+  const pb = textPath(f, 'Aksa', size, x, base).d;
   const w = Math.ceil(total + pad * 2);
-  const h = Math.ceil(size * 1.45);
-  const svg = `<path d="${pa}" fill="${ink}"/><path d="${pm}" fill="${color || `url(#${p}-goldline)`}"/><path d="${pb}" fill="${ink}"/>`;
+  const h = Math.ceil(size * 1.3);
+  const svg = `<path d="${pa}" fill="${ink}"/><path d="${pm}" fill="${color || `url(#${p}-gold)`}"/><path d="${pb}" fill="${ink}"/>`;
   return { svg, w, h };
 }

@@ -5,33 +5,47 @@ import { Art, art } from './Art';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
-/** Live countdown — or, after the ceremony, the "forever began" message. */
+/** Each digit re-mounts when it changes, which plays a soft "flip" (see .digit in CSS). */
+function Digits({ value, min = 2 }: { value: number; min?: number }) {
+  const s = String(value).padStart(min, '0');
+  return (
+    <span className="countdown__num">
+      {s.split('').map((ch, i) => (
+        <span key={`${s.length - i}-${ch}`} className="digit">
+          {ch}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+/** Live countdown to the ceremony — or, after it begins, the "forever began" message. */
 export function Countdown({ nowMs }: { nowMs: number }) {
   const r = remaining(nowMs);
 
   if (r.done) return <AfterWedding />;
 
   const units = [
-    { v: r.days, label: r.days === 1 ? 'Day' : 'Days' },
-    { v: r.hours, label: r.hours === 1 ? 'Hour' : 'Hours' },
-    { v: r.minutes, label: r.minutes === 1 ? 'Minute' : 'Minutes' },
-    { v: r.seconds, label: r.seconds === 1 ? 'Second' : 'Seconds' },
+    { v: r.days, label: r.days === 1 ? 'Day' : 'Days', min: 1 },
+    { v: r.hours, label: r.hours === 1 ? 'Hour' : 'Hours', min: 2 },
+    { v: r.minutes, label: r.minutes === 1 ? 'Minute' : 'Minutes', min: 2 },
+    { v: r.seconds, label: r.seconds === 1 ? 'Second' : 'Seconds', min: 2 },
   ];
 
   return (
     <div className="countdown">
-      <p className="label countdown__heading">{wedding.countdown.heading}</p>
-      {/* The visual tiles update every second; screen readers get a calmer summary. */}
+      <p className="kicker countdown__heading">{wedding.countdown.heading}</p>
+      {/* Visual tiles update every second; screen readers get a calmer summary. */}
       <ol className="countdown__tiles" aria-hidden="true">
         {units.map((u, i) => (
           <li key={i} className="countdown__tile">
-            <span className="countdown__num">{i === 0 ? u.v : pad(u.v)}</span>
+            <Digits value={u.v} min={u.min} />
             <span className="countdown__unit">{u.label}</span>
           </li>
         ))}
       </ol>
       <p className="sr-only">
-        {r.days} days and {r.hours} hours until the wedding.
+        {r.days} days, {pad(r.hours)} hours and {pad(r.minutes)} minutes until the wedding.
       </p>
     </div>
   );

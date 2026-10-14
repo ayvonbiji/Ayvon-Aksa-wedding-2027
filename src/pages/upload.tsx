@@ -226,9 +226,9 @@ function UploadPage() {
           ) : (
             <>
               <ol className="upload-steps">
-                <li><span>1</span>Choose your photos — up to {m.maxFilesPerBatch} at a time.</li>
-                <li><span>2</span>Add your name or a caption if you like (optional).</li>
-                <li><span>3</span>Tap <strong>Share</strong>. We’ll add them after a quick look.</li>
+                <li><span>1</span><p>Choose your photos — up to {m.maxFilesPerBatch} at a time.</p></li>
+                <li><span>2</span><p>Add your name or a caption if you like (optional).</p></li>
+                <li><span>3</span><p>Tap <strong>Share</strong>. We’ll add them after a quick look.</p></li>
               </ol>
 
               <div
@@ -257,11 +257,29 @@ function UploadPage() {
                   }}
                   disabled={busy}
                 />
-                <label htmlFor="photo-input" className="btn btn--solid dropzone__btn">
-                  <Icon name="camera" /> Upload Photos
-                </label>
+                <input
+                  id="camera-input"
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="sr-only"
+                  onChange={(e) => {
+                    if (e.target.files?.length) addFiles(e.target.files);
+                    e.target.value = '';
+                  }}
+                  disabled={busy}
+                />
+                <div className="dropzone__buttons">
+                  <label htmlFor="photo-input" className="btn btn--solid dropzone__btn">
+                    <Icon name="upload" /> Upload Photos
+                  </label>
+                  <label htmlFor="camera-input" className="btn btn--pill dropzone__btn dropzone__btn--camera">
+                    <Icon name="camera" /> Take a Photo
+                  </label>
+                </div>
                 <p className="dropzone__hint">
-                  <span className="only-desktop">or drag &amp; drop photos here · </span>JPEG, PNG, WebP or iPhone photos
+                  <span className="only-desktop">or drag &amp; drop photos here · </span>JPEG, PNG, WebP or iPhone photos · up to {m.maxInputMB} MB each,{' '}
+                  {m.maxFilesPerBatch} at a time
                 </p>
               </div>
 

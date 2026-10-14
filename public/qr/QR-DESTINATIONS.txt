@@ -4,7 +4,7 @@ Scan to Visit Our Wedding Website
   https://ayvonbiji.github.io/Ayvon-Aksa-wedding-2027/
   files: ayvon-aksa-wedding-website-qr.png / ayvon-aksa-wedding-website-qr.svg
 
-Scan to Upload Wedding Memories
+Scan to Share Your Wedding Memories
   https://ayvonbiji.github.io/Ayvon-Aksa-wedding-2027/upload-memories/
   files: ayvon-aksa-upload-memories-qr.png / ayvon-aksa-upload-memories-qr.svg
 

@@ -17,7 +17,7 @@ export const wedding = {
   /* ── The ceremony (the ONLY event on the site) ──────────────────────────── */
   ceremony: {
     /** Exact start with the India Standard Time offset. Do not drop "+05:30". */
-    startISO: '2027-08-23T11:30:00+05:30',
+    startISO: '2027-08-23T11:00:00+05:30',
     /** IANA timezone used for the calendar file and Google Calendar. */
     timeZone: 'Asia/Kolkata',
     /** Ceremony length in minutes (used for calendar end time). */
@@ -25,7 +25,7 @@ export const wedding = {
     dateLabel: 'Monday, 23 August 2027',
     shortDateLabel: '23 August 2027',
     numericDateLabel: '23 · 08 · 2027',
-    timeLabel: '11:30 AM IST',
+    timeLabel: '11:00 AM IST',
     venue: 'St. Thomas Valiyapally',
     town: 'Ranni',
     region: 'Kerala',
@@ -55,7 +55,7 @@ export const wedding = {
       'Join Ayvon Joseph Biji and Aksa Saji Kunnel as they begin their new chapter together on 23 August 2027.',
     /** Social preview image, relative to /public. 1200×630 px. */
     ogImage: 'og-image.png',
-    themeColor: '#F6EDE2',
+    themeColor: '#6B1E33',
   },
   share: {
     /** "{url}" is replaced with siteUrl. */
@@ -142,7 +142,7 @@ export const wedding = {
     emptyMessage:
       'Help us collect the moments that make our wedding unforgettable. Scan our QR code and share your photographs with us.',
     uploadTitle: 'Our Wedding Memories',
-    uploadSubtitle: 'Share your beautiful moments with Ayvon & Aksa.',
+    uploadSubtitle: 'Share your favourite moments from our wedding with Ayvon & Aksa.',
     uploadHeading: 'Capture the Love, Share the Memories',
     uploadMessage:
       'Every photograph tells a story. Share your favourite moments from our wedding and help us keep these memories forever.',

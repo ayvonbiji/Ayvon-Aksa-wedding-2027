@@ -25,7 +25,7 @@ export function WeddingDay() {
         <Art {...art.divider} className="divider" />
       </Reveal>
 
-      <Reveal className="details-card" delay={100}>
+      <Reveal className="details-card" variant="zoom" delay={100}>
         <Art {...art.bouquet} className="details-card__flowers" />
         <dl className="details-card__list">
           {rows.map((r) => (

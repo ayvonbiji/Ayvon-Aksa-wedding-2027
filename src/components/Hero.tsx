@@ -6,6 +6,9 @@ import { Logo } from './Logo';
 import { Countdown } from './Countdown';
 import { scrollToId } from './Header';
 
+/** Delays (s) for the staggered entrance — feels like the card is being revealed line by line. */
+const d = (s: number) => ({ animationDelay: `${s}s` });
+
 /** The invitation page: names, date, venue, countdown and couple photo. */
 export function Hero({ nowMs }: { nowMs: number }) {
   const c = wedding.ceremony;
@@ -15,60 +18,16 @@ export function Hero({ nowMs }: { nowMs: number }) {
 
   return (
     <section id="home" className="hero section" aria-labelledby="hero-names">
+      <div className="hero__bg" aria-hidden="true">
+        {Array.from({ length: 10 }, (_, i) => (
+          <span key={i} className="sparkle" style={{ ['--i' as string]: i }} />
+        ))}
+      </div>
       <Art {...art.cornerTL} className="corner corner--tl" />
       <Art {...art.cornerTR} className="corner corner--tr" />
 
       <div className="hero__grid">
-        <div className="hero__text">
-          <p className="label hero__eyebrow fade-up" style={{ animationDelay: '.1s' }}>{h.eyebrow}</p>
-          <Logo variant="monogram" className="hero__logo fade-up" decorative />
-
-          <h1 id="hero-names" tabIndex={-1} className="hero__names fade-up" style={{ animationDelay: '.25s' }}>
-            <span className="script">{wedding.groom.full}</span>
-            <span className="hero__amp" aria-label="and">&amp;</span>
-            <span className="script">{wedding.bride.full}</span>
-          </h1>
-
-          <p className="hero__invite fade-up" style={{ animationDelay: '.4s' }}>{h.invite}</p>
-
-          <div className="datecard fade-up" style={{ animationDelay: '.5s' }}>
-            <Art {...art.cartouche} className="datecard__frame" />
-            <div className="datecard__body">
-              <span className="label datecard__kicker">Our Wedding Day</span>
-              <span className="datecard__day">{day}</span>
-              <span className="datecard__month">{month}</span>
-              <span className="datecard__meta">
-                {year} · {weekday}
-              </span>
-            </div>
-          </div>
-          <p className="sr-only">{c.dateLabel}</p>
-
-          <p className="hero__when fade-up" style={{ animationDelay: '.6s' }}>
-            <span className="hero__time">{c.timeLabel}</span>
-            <span className="hero__venue">
-              {c.venue}, {c.town}, {c.region}
-            </span>
-          </p>
-
-          <div className="fade-up" style={{ animationDelay: '.7s' }}>
-            <Countdown nowMs={nowMs} />
-          </div>
-
-          <a
-            href="#wedding-day"
-            className="btn btn--solid hero__cta fade-up"
-            style={{ animationDelay: '.8s' }}
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToId('wedding-day');
-            }}
-          >
-            {h.button}
-          </a>
-        </div>
-
-        <figure className="hero__photo fade-up" style={{ animationDelay: '.3s' }}>
+        <figure className="hero__photo enter enter--photo" style={d(0.9)}>
           <div className="arch arch--photo">
             {photoOk ? (
               <img
@@ -91,7 +50,69 @@ export function Hero({ nowMs }: { nowMs: number }) {
           <Art {...art.bouquet} className="hero__photo-flowers hero__photo-flowers--top" />
           <Art {...art.bouquetAlt} className="hero__photo-flowers hero__photo-flowers--bottom" />
         </figure>
+
+        <div className="invite-panel">
+          <span className="invite-panel__frame" aria-hidden="true" />
+          <p className="kicker enter" style={d(0.15)}>{h.eyebrow}</p>
+          <div className="logo-glow enter enter--zoom" style={d(0.3)}>
+            <Logo variant="monogram" className="hero__logo" decorative />
+          </div>
+
+          <h1 id="hero-names" tabIndex={-1} className="hero__names">
+            <span className="name-line enter enter--name" style={d(0.55)}>{wedding.groom.full}</span>
+            <span className="hero__amp enter enter--zoom" style={d(0.85)} aria-label="and">&amp;</span>
+            <span className="name-line enter enter--name" style={d(1.05)}>{wedding.bride.full}</span>
+          </h1>
+
+          <p className="hero__invite enter" style={d(1.35)}>{h.invite}</p>
+
+          <div className="date-row enter" style={d(1.55)} aria-hidden="true">
+            <span className="date-row__side">{weekday}</span>
+            <span className="date-row__day">{day}</span>
+            <span className="date-row__side">
+              {month}
+              <br />
+              {year}
+            </span>
+          </div>
+          <p className="sr-only">{c.dateLabel}</p>
+
+          <p className="hero__when enter" style={d(1.7)}>
+            <span className="hero__time">{c.timeLabel}</span>
+            <span className="hero__venue">
+              {c.venue}, {c.town}, {c.region}
+            </span>
+          </p>
+
+          <div className="enter" style={d(1.85)}>
+            <Countdown nowMs={nowMs} />
+          </div>
+
+          <a
+            href="#wedding-day"
+            className="btn btn--solid hero__cta enter"
+            style={d(2)}
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToId('wedding-day');
+            }}
+          >
+            {h.button}
+          </a>
+        </div>
       </div>
+
+      <a
+        href="#wedding-day"
+        className="scroll-cue"
+        aria-label="Scroll to wedding details"
+        onClick={(e) => {
+          e.preventDefault();
+          scrollToId('wedding-day');
+        }}
+      >
+        <span />
+      </a>
     </section>
   );
 }

@@ -3,16 +3,18 @@ import { useReveal } from '../lib/hooks';
 
 interface Props {
   as?: ElementType;
+  /** Entrance style: rise (default), left, right, zoom or fade. */
+  variant?: 'up' | 'left' | 'right' | 'zoom' | 'fade';
   className?: string;
   delay?: number;
   children: ReactNode;
 }
 
 /** Gentle fade-and-rise when scrolled into view (instant for reduced motion). */
-export function Reveal({ as: Tag = 'div', className = '', delay = 0, children }: Props) {
+export function Reveal({ as: Tag = 'div', className = '', delay = 0, variant = 'up', children }: Props) {
   const ref = useReveal<HTMLDivElement>();
   return (
-    <Tag ref={ref} className={`reveal ${className}`} style={delay ? { transitionDelay: `${delay}ms` } : undefined}>
+    <Tag ref={ref} className={`reveal reveal--${variant} ${className}`} style={delay ? { transitionDelay: `${delay}ms` } : undefined}>
       {children}
     </Tag>
   );

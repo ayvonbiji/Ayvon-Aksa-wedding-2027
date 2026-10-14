@@ -52,7 +52,7 @@ export function LoveStory() {
 
           <ol className="timeline">
             {chapters.map((ch, i) => (
-              <Reveal as="li" key={`${i}-${ch.title}`} className={`timeline__item ${i % 2 ? 'timeline__item--right' : 'timeline__item--left'}`}>
+              <Reveal as="li" key={`${i}-${ch.title}`} variant={i % 2 ? 'right' : 'left'} className={`timeline__item ${i % 2 ? 'timeline__item--right' : 'timeline__item--left'}`}>
                 <span className="timeline__dot" aria-hidden="true">
                   {String(i + 1).padStart(2, '0')}
                 </span>

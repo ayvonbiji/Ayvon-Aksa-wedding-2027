@@ -31,7 +31,7 @@ export function remaining(nowMs: number, targetMs: number = CEREMONY_MS): Remain
 
 /**
  * Current time, with an optional preview override for testing:
- *   ?now=2027-08-23T11:31:00+05:30   (shows the post-wedding view)
+ *   ?now=2027-08-23T11:01:00+05:30   (shows the post-wedding view)
  * Encode "+" as %2B if your browser drops it.
  */
 let offset: number | null = null;

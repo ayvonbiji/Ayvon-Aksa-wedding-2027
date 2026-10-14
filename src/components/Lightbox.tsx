@@ -22,17 +22,27 @@ interface Props {
  * Full-screen photo viewer: previous/next buttons, ← → keys, Escape to close,
  * swipe on touch screens, focus kept inside while open and restored on close.
  */
-export function Lightbox({ items, index, onClose, onIndex, label = 'Photo viewer' }: Props) {
+export function Lightbox({ items, index, onClose: requestClose, onIndex, label = 'Photo viewer' }: Props) {
   const dialog = useRef<HTMLDivElement>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
   const opener = useRef<Element | null>(null);
   const touch = useRef<{ x: number; y: number } | null>(null);
   const [failed, setFailed] = useState<Record<number, boolean>>({});
+  const [closing, setClosing] = useState(false);
+  const [dir, setDir] = useState<'next' | 'prev' | 'none'>('none');
   useScrollLock(true);
 
+  // Play the closing animation, then unmount
+  const onClose = useCallback(() => {
+    if (closing) return;
+    setClosing(true);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.setTimeout(requestClose, reduce ? 0 : 260);
+  }, [closing, requestClose]);
+
   const count = items.length;
-  const prev = useCallback(() => onIndex((index - 1 + count) % count), [index, count, onIndex]);
-  const next = useCallback(() => onIndex((index + 1) % count), [index, count, onIndex]);
+  const prev = useCallback(() => (setDir('prev'), onIndex((index - 1 + count) % count)), [index, count, onIndex]);
+  const next = useCallback(() => (setDir('next'), onIndex((index + 1) % count)), [index, count, onIndex]);
 
   useEffect(() => {
     opener.current = document.activeElement;
@@ -72,7 +82,7 @@ export function Lightbox({ items, index, onClose, onIndex, label = 'Photo viewer
   return createPortal(
     <div
       ref={dialog}
-      className="lightbox"
+      className={`lightbox ${closing ? 'lightbox--closing' : ''}`}
       role="dialog"
       aria-modal="true"
       aria-label={label}
@@ -95,7 +105,7 @@ export function Lightbox({ items, index, onClose, onIndex, label = 'Photo viewer
           <Icon name="left" />
         </button>
       )}
-      <figure className="lightbox__figure" key={index}>
+      <figure className={`lightbox__figure lightbox__figure--${dir}`} key={index}>
         {failed[index] ? (
           <div className="placeholder placeholder--dark" role="img" aria-label={item.alt}>
             <span>This photo could not be loaded</span>

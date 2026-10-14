@@ -9,63 +9,40 @@ interface Props {
   onOpened: () => void;
 }
 
-/** The face of the invitation (rendered twice: once per door). */
-function CoverFace({ interactive, onOpen, buttonRef }: { interactive: boolean; onOpen?: () => void; buttonRef?: React.Ref<HTMLButtonElement> }) {
-  return (
-    <div className="cover__face">
-      <Art {...art.cornerTL} className="cover__corner cover__corner--tl" />
-      <Art {...art.cornerBR} className="cover__corner cover__corner--br" />
-      <div className="cover__frame">
-        <Art {...art.oval} className="cover__oval" />
-        <div className="cover__content">
-          <Logo variant="monogram" className="cover__logo" decorative={!interactive} />
-          <p className="cover__kicker">{wedding.cover.kicker}</p>
-          <p className="cover__names">
-            <span>{wedding.groom.full}</span>
-            <span className="cover__amp">&amp;</span>
-            <span>{wedding.bride.full}</span>
-          </p>
-          <p className="cover__date">{wedding.ceremony.shortDateLabel}</p>
-          {interactive ? (
-            <button ref={buttonRef} type="button" className="btn btn--pill cover__btn" onClick={onOpen}>
-              {wedding.cover.button}
-            </button>
-          ) : (
-            <span className="btn btn--pill cover__btn" aria-hidden="true">
-              {wedding.cover.button}
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
+/** Total length of the opening sequence (ms) — keep in sync with global.css. */
+const OPEN_MS = 2600;
 
 /**
- * Opening experience: a gate-fold invitation card. Clicking "Open Invitation"
- * swings the two halves apart to reveal the website (≈1.4 s; a short fade
- * when the visitor prefers reduced motion).
+ * Opening experience: a burgundy envelope sealed with the gold A&A monogram.
+ * "Open Invitation" breaks the seal, lifts the flap, slides the invitation
+ * card out and dissolves into the website. Reduced motion → short fade.
+ * Clicking again while it plays skips straight to the site.
  */
 export function InvitationCover({ onOpened }: Props) {
   const [stage, setStage] = useState<'closed' | 'opening' | 'gone'>('closed');
   const btn = useRef<HTMLButtonElement>(null);
+  const timer = useRef<number>();
   useScrollLock(stage !== 'gone');
 
   useEffect(() => {
     btn.current?.focus({ preventScroll: true });
+    return () => window.clearTimeout(timer.current);
   }, []);
 
+  const finish = () => {
+    window.clearTimeout(timer.current);
+    setStage('gone');
+    onOpened();
+  };
+
   const open = () => {
-    if (stage !== 'closed') return;
+    if (stage === 'opening') return finish(); // second click skips the animation
     setStage('opening');
-    const ms = prefersReducedMotion() ? 350 : 1500;
-    window.setTimeout(() => {
-      setStage('gone');
-      onOpened();
-    }, ms);
+    timer.current = window.setTimeout(finish, prefersReducedMotion() ? 350 : OPEN_MS);
   };
 
   if (stage === 'gone') return null;
+  const c = wedding.ceremony;
 
   return (
     <div
@@ -74,22 +51,46 @@ export function InvitationCover({ onOpened }: Props) {
       aria-modal="true"
       aria-label={`Wedding invitation of ${wedding.groom.full} and ${wedding.bride.full}`}
     >
-      {/* Accessible, interactive face (fades as the doors open) */}
-      <div className="cover__front">
-        <CoverFace interactive onOpen={open} buttonRef={btn} />
+      <div className="cover__bg" aria-hidden="true">
+        <Art {...art.cornerTL} className="cover__corner cover__corner--tl" />
+        <Art {...art.cornerBR} className="cover__corner cover__corner--br" />
+        <span className="cover__glow" />
       </div>
-      {/* Two visual halves that swing open */}
-      <div className="cover__door cover__door--left" aria-hidden="true">
-        <div className="cover__door-inner">
-          <CoverFace interactive={false} />
+
+      <div className="cover__stage">
+        <p className="cover__kicker">You are cordially invited</p>
+
+        <div className="envelope" onClick={open} aria-hidden="true">
+          <div className="envelope__back" />
+          <div className="envelope__card">
+            <Logo variant="monogram" className="envelope__logo" decorative />
+            <p className="envelope__script">{wedding.cover.kicker}</p>
+            <p className="envelope__names">
+              {wedding.groom.first} <span>&amp;</span> {wedding.bride.first}
+            </p>
+            <p className="envelope__date">{c.numericDateLabel}</p>
+          </div>
+          <div className="envelope__pocket" />
+          <div className="envelope__flap" />
+          <div className="envelope__seal">
+            <Logo variant="compact" className="envelope__seal-logo" decorative />
+          </div>
+        </div>
+
+        <div className="cover__text">
+          <p className="cover__names">
+            <span>{wedding.groom.full}</span>
+            <span className="cover__amp">&amp;</span>
+            <span>{wedding.bride.full}</span>
+          </p>
+          <p className="cover__date">
+            {c.dateLabel} · {c.timeLabel}
+          </p>
+          <button ref={btn} type="button" className="btn btn--gold cover__btn" onClick={open}>
+            {stage === 'opening' ? 'Opening…' : wedding.cover.button}
+          </button>
         </div>
       </div>
-      <div className="cover__door cover__door--right" aria-hidden="true">
-        <div className="cover__door-inner">
-          <CoverFace interactive={false} />
-        </div>
-      </div>
-      <div className="cover__seam" aria-hidden="true" />
     </div>
   );
 }

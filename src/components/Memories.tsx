@@ -123,7 +123,7 @@ export function Memories() {
                 </p>
               )}
               <div className="memories__invite">
-                <QrCode url={upload} label="Scan to Upload Wedding Memories" variant="upload" size={150} />
+                <QrCode url={upload} label="Scan to Share Your Wedding Memories" variant="upload" size={150} />
                 <a className="btn btn--solid" href={upload}>
                   <Icon name="camera" /> Share your photos
                 </a>

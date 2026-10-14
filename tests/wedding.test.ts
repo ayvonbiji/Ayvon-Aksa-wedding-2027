@@ -12,16 +12,16 @@ describe('wedding details', () => {
     expect(wedding.groom.full).toBe('Ayvon Joseph Biji');
     expect(wedding.bride.full).toBe('Aksa Saji Kunnel');
     expect(wedding.ceremony.dateLabel).toBe('Monday, 23 August 2027');
-    expect(wedding.ceremony.timeLabel).toBe('11:30 AM IST');
+    expect(wedding.ceremony.timeLabel).toBe('11:00 AM IST');
     expect(wedding.ceremony.venue).toBe('St. Thomas Valiyapally');
     expect(`${wedding.ceremony.town}, ${wedding.ceremony.region}, ${wedding.ceremony.country}`).toBe('Ranni, Kerala, India');
   });
 
-  it('ceremony is 23 Aug 2027 11:30 IST = 06:00 UTC, and it is a Monday', () => {
-    expect(new Date(CEREMONY_MS).toISOString()).toBe('2027-08-23T06:00:00.000Z');
+  it('ceremony is 23 Aug 2027 11:00 IST = 05:30 UTC, and it is a Monday', () => {
+    expect(new Date(CEREMONY_MS).toISOString()).toBe('2027-08-23T05:30:00.000Z');
     const ist = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).format(CEREMONY_MS);
     expect(ist).toMatch(/Monday, 23 August 2027/);
-    expect(ist).toMatch(/11:30\s?am/i);
+    expect(ist).toMatch(/11:00\s?am/i);
   });
 
   it('site URL is absolute and ends with a slash', () => {
@@ -40,8 +40,8 @@ describe('countdown', () => {
     expect(remaining(CEREMONY_MS + 86400_000)).toEqual({ days: 0, hours: 0, minutes: 0, seconds: 0, done: true });
   });
   it('is the same instant for visitors in any timezone (e.g. Italy, summer time)', () => {
-    // 08:00 in Rome (CEST, UTC+2) on the wedding day = 11:30 IST
-    expect(Date.parse('2027-08-23T08:00:00+02:00')).toBe(CEREMONY_MS);
+    // 07:30 in Rome (CEST, UTC+2) on the wedding day = 11:00 IST
+    expect(Date.parse('2027-08-23T07:30:00+02:00')).toBe(CEREMONY_MS);
   });
 });
 
@@ -49,8 +49,8 @@ describe('calendar', () => {
   const ics = buildICS(new Date('2026-10-14T00:00:00Z'));
   it('creates exactly one event with IST start and end', () => {
     expect(ics.match(/BEGIN:VEVENT/g)).toHaveLength(1);
-    expect(ics).toContain('DTSTART;TZID=Asia/Kolkata:20270823T113000');
-    expect(ics).toContain('DTEND;TZID=Asia/Kolkata:20270823T133000');
+    expect(ics).toContain('DTSTART;TZID=Asia/Kolkata:20270823T110000');
+    expect(ics).toContain('DTEND;TZID=Asia/Kolkata:20270823T130000');
     expect(ics).toContain('TZOFFSETTO:+0530');
     expect(ics).toContain('LOCATION:St. Thomas Valiyapally\\, Ranni\\, Kerala\\, India');
   });
@@ -60,9 +60,10 @@ describe('calendar', () => {
   });
   it('google calendar link uses UTC times and the Kolkata zone', () => {
     const u = new URL(googleCalendarUrl());
-    expect(u.searchParams.get('dates')).toBe('20270823T060000Z/20270823T080000Z');
+    expect(u.searchParams.get('dates')).toBe('20270823T053000Z/20270823T073000Z');
     expect(u.searchParams.get('ctz')).toBe('Asia/Kolkata');
-    expect(ceremonyTimes().localEnd).toBe('20270823T133000');
+    expect(ceremonyTimes().localEnd).toBe('20270823T130000');
+    expect(ceremonyTimes().localStart).toBe('20270823T110000');
   });
 });
 
@@ -89,3 +90,10 @@ function walk(p: string): string[] {
   if (st.isFile()) return [p];
   return fs.readdirSync(p).flatMap((f) => walk(path.join(p, f)));
 }
+
+describe('ceremony time', () => {
+  it('no stale 11:30 time remains anywhere in the source', () => {
+    const files = ['src', 'scripts', 'index.html', 'upload-memories', 'manage-memories', 'README.md'].flatMap((p) => walk(p));
+    for (const f of files) expect(fs.readFileSync(f, 'utf8'), f).not.toMatch(/11[:.]30/);
+  });
+});

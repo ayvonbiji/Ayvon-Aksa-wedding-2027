@@ -42,20 +42,20 @@ write(pub('brand', 'monogram-ivory.svg'), monoIvory);
 png(monoIvory, pub('brand', 'monogram-ivory.png'), 1200);
 
 /* 3. Monochrome monogram (single colour) */
-const monoInk = doc('-150 -150 300 300', `<title>${names} monogram</title>${monogram({ color: '#4A3B36' })}`, { w: 300, h: 300 });
+const monoInk = doc('-150 -150 300 300', `<title>${names} monogram</title>${monogram({ color: '#2F2224' })}`, { w: 300, h: 300 });
 write(pub('brand', 'monogram-mono.svg'), monoInk);
-write(pub('brand', 'monogram-mono-white.svg'), monoInk.replaceAll('#4A3B36', '#FFFFFF').replaceAll('stroke="#FFFFFF" stroke-width="3"', 'stroke="none" stroke-width="3"'));
+write(pub('brand', 'monogram-mono-white.svg'), monoInk.replaceAll('#2F2224', '#FFFFFF').replaceAll('stroke="#FFFFFF" stroke-width="3"', 'stroke="none" stroke-width="3"'));
 
 /* 4. Wordmark */
 const wm = wordmark();
 const wmSvg = doc(`0 0 ${wm.w} ${wm.h}`, `<title>${names}</title>${wm.svg}`, { w: wm.w, h: wm.h });
 write(pub('brand', 'wordmark.svg'), wmSvg);
 png(wmSvg, pub('brand', 'wordmark-transparent.png'), 1600);
-const wmMono = wordmark({ color: '#4A3B36' });
+const wmMono = wordmark({ color: '#2F2224' });
 write(pub('brand', 'wordmark-mono.svg'), doc(`0 0 ${wmMono.w} ${wmMono.h}`, `<title>${names}</title>${wmMono.svg}`, { w: wmMono.w, h: wmMono.h }));
 
 /* 5. Compact header logo: letters only inside a fine ring */
-const compact = doc('-150 -150 300 300', `<title>${names}</title><circle r="138" fill="none" stroke="url(#aa-goldline)" stroke-width="5"/>${monogram({ ornaments: false })}`, { w: 300, h: 300 });
+const compact = doc('-150 -150 300 300', `<title>${names}</title><circle r="146" fill="#FBF6EE"/><circle r="138" fill="none" stroke="url(#aa-goldline)" stroke-width="6"/>${monogram({ ornaments: false })}`, { w: 300, h: 300 });
 write(pub('brand', 'logo-header.svg'), compact);
 
 /* 6. Full invitation lock-up: monogram + wordmark + date (transparent) */
@@ -70,30 +70,30 @@ png(lockup, pub('brand', 'logo-invitation-transparent.png'), 1600);
 
 /* 7. Favicons */
 const fav = doc('-150 -150 300 300',
-  `<circle r="150" fill="#FBF3EA"/><circle r="132" fill="none" stroke="url(#aa-goldline)" stroke-width="9"/>${monogram({ ornaments: false })}`, { w: 300, h: 300 });
+  `<circle r="150" fill="#FBF6EE"/><circle r="132" fill="none" stroke="url(#aa-goldline)" stroke-width="9"/>${monogram({ ornaments: false })}`, { w: 300, h: 300 });
 write(pub('favicon.svg'), fav);
 png(fav, pub('favicon-32.png'), 32);
 png(fav, pub('icon-192.png'), 192);
 png(fav, pub('icon-512.png'), 512);
 const touch = doc('-150 -150 300 300',
-  `<rect x="-150" y="-150" width="300" height="300" fill="#FBF3EA"/><circle r="118" fill="none" stroke="url(#aa-goldline)" stroke-width="6"/><g transform="scale(.82)">${monogram({ ornaments: false })}</g>`, { w: 300, h: 300 });
+  `<rect x="-150" y="-150" width="300" height="300" fill="#FBF6EE"/><circle r="118" fill="none" stroke="url(#aa-goldline)" stroke-width="6"/><g transform="scale(.82)">${monogram({ ornaments: false })}</g>`, { w: 300, h: 300 });
 png(touch, pub('apple-touch-icon.png'), 180);
 
 /* 8. Social-sharing image 1200×630 */
 {
   const W = 1200, H = 630;
   const wmBig = wordmark({ size: 128 });
-  let s = `<rect width="${W}" height="${H}" fill="#FBF5EC"/>`;
-  s += `<radialGradient id="wash" cx=".5" cy=".5" r=".6"><stop offset="0" stop-color="#FFFDF9"/><stop offset="1" stop-color="#F4E1DA"/></radialGradient><rect width="${W}" height="${H}" fill="url(#wash)"/>`;
-  s += `<rect x="28" y="28" width="${W - 56}" height="${H - 56}" fill="none" stroke="#C3A26A" stroke-width="2"/>`;
-  s += `<rect x="40" y="40" width="${W - 80}" height="${H - 80}" fill="none" stroke="#C3A26A" stroke-width=".8"/>`;
+  let s = `<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7A2239"/><stop offset="1" stop-color="#3E0C1A"/></linearGradient><rect width="${W}" height="${H}" fill="url(#bg)"/>`;
+  s += `<radialGradient id="wash" cx=".5" cy=".45" r=".65"><stop offset="0" stop-color="#FFFCF6"/><stop offset=".75" stop-color="#F8EEDF"/><stop offset="1" stop-color="#EFDCC2"/></radialGradient><rect x="34" y="34" width="${W - 68}" height="${H - 68}" rx="6" fill="url(#wash)"/>`;
+  s += `<rect x="50" y="50" width="${W - 100}" height="${H - 100}" fill="none" stroke="#B08A4A" stroke-width="2.5"/>`;
+  s += `<rect x="60" y="60" width="${W - 120}" height="${H - 120}" fill="none" stroke="#B08A4A" stroke-width=".9"/>`;
   s += o.cluster(70, 70, 150, { dir: 40, seed: 1 }) + o.cluster(W - 70, H - 70, 150, { dir: 220, seed: 2 });
   s += o.cluster(W - 60, 80, 105, { dir: 140, seed: 3 }) + o.cluster(60, H - 80, 105, { dir: -40, seed: 4 });
   s += `<g transform="translate(${W / 2} 150) scale(.5)">${monogram()}</g>`;
   s += `<g transform="translate(${(W - wmBig.w) / 2} 220)">${wmBig.svg}</g>`;
-  s += `<path d="${centred(fonts.label, 'ARE GETTING MARRIED', 22, W / 2, 420, 8)}" fill="#8E5A61"/>`;
+  s += `<path d="${centred(fonts.label, 'ARE GETTING MARRIED', 22, W / 2, 420, 8)}" fill="#6B1E33"/>`;
   s += `<g transform="translate(${W / 2 - 150} 440)">${o.divider(300)}</g>`;
-  s += `<path d="${centred(fonts.serif, wedding.ceremony.dateLabel + ' · ' + wedding.ceremony.timeLabel, 40, W / 2, 512)}" fill="#4A3B36"/>`;
+  s += `<path d="${centred(fonts.serif, wedding.ceremony.dateLabel + ' · ' + wedding.ceremony.timeLabel, 40, W / 2, 512)}" fill="#2F2224"/>`;
   s += `<path d="${centred(fonts.serifItalic, `${wedding.ceremony.venue}, ${wedding.ceremony.town}, ${wedding.ceremony.region}`, 32, W / 2, 556)}" fill="#6B5A52"/>`;
   png(doc(`0 0 ${W} ${H}`, s, { w: W, h: H }), pub('og-image.png'));
 }
@@ -122,7 +122,7 @@ function qrInner(url, variant, cell = 10) {
 const uploadUrl = new URL(wedding.memories.uploadPath, wedding.siteUrl).href;
 const QRS = [
   { key: 'site', url: wedding.siteUrl, file: 'ayvon-aksa-wedding-website-qr', label: 'Scan to Visit Our Wedding Website', heading: ['Visit Our', 'Wedding Website'] },
-  { key: 'upload', url: uploadUrl, file: 'ayvon-aksa-upload-memories-qr', label: 'Scan to Upload Wedding Memories', heading: ['Share Your', 'Wedding Memories'] },
+  { key: 'upload', url: uploadUrl, file: 'ayvon-aksa-upload-memories-qr', label: 'Scan to Share Your Wedding Memories', heading: ['Upload Your', 'Wedding Memories'] },
 ];
 for (const name of ['wedding-qr.svg', 'wedding-qr.png', 'README.txt']) fs.rmSync(pub('qr', name), { force: true });
 for (const q of QRS) {
@@ -138,7 +138,7 @@ for (const q of QRS) {
   const W = 1500, H = 2100;
   const card = [];
   card.push(`<rect width="${W}" height="${H}" fill="#FCF8F2"/>`);
-  card.push(`<radialGradient id="cw" cx=".5" cy=".42" r=".75"><stop offset="0" stop-color="#FFFDF9"/><stop offset="1" stop-color="#F6E3DD"/></radialGradient><rect width="${W}" height="${H}" fill="url(#cw)"/>`);
+  card.push(`<radialGradient id="cw" cx=".5" cy=".42" r=".75"><stop offset="0" stop-color="#FFFDF9"/><stop offset="1" stop-color="#F0DFC3"/></radialGradient><rect width="${W}" height="${H}" fill="url(#cw)"/>`);
   card.push(`<rect x="56" y="56" width="${W - 112}" height="${H - 112}" fill="none" stroke="#BC9A60" stroke-width="4"/>`);
   card.push(`<rect x="76" y="76" width="${W - 152}" height="${H - 152}" fill="none" stroke="#BC9A60" stroke-width="1.6"/>`);
   card.push(o.cluster(110, 110, 210, { dir: 45, seed: 1 }), o.cluster(W - 110, H - 110, 210, { dir: 225, seed: 2 }));
@@ -146,23 +146,23 @@ for (const q of QRS) {
   card.push(`<g transform="translate(${W / 2} 300) scale(.95)">${monogram()}</g>`);
   const wmc = wordmark({ size: 150 });
   card.push(`<g transform="translate(${(W - wmc.w) / 2} 455)">${wmc.svg}</g>`);
-  card.push(`<path d="${centred(fonts.serifRegular, `${wedding.groom.full}  &  ${wedding.bride.full}`, 44, W / 2, 712)}" fill="#4A3B36"/>`);
-  card.push(`<path d="${centred(fonts.label, wedding.ceremony.shortDateLabel.toUpperCase(), 34, W / 2, 782, 12)}" fill="#7E5F2E"/>`);
+  card.push(`<path d="${centred(fonts.serifRegular, `${wedding.groom.full}  &  ${wedding.bride.full}`, 44, W / 2, 712)}" fill="#2F2224"/>`);
+  card.push(`<path d="${centred(fonts.label, wedding.ceremony.shortDateLabel.toUpperCase(), 34, W / 2, 782, 12)}" fill="#7A5A24"/>`);
   card.push(`<g transform="translate(${W / 2 - 220} 812) scale(1.4667)">${o.divider(300)}</g>`);
   // two QR codes, clearly separated
   const qs = 560, gap = 140, top = 1030;
   QRS.forEach((q, i) => {
     const x = (W - (qs * 2 + gap)) / 2 + i * (qs + gap);
     const { inner, size } = qrInner(q.url, q.key);
-    q.heading.forEach((line, li) => card.push(`<path d="${centred(fonts.script, line, 58, x + qs / 2, top - 112 + li * 64)}" fill="#8E5A61"/>`));
+    q.heading.forEach((line, li) => card.push(`<path d="${centred(fonts.script, line, 58, x + qs / 2, top - 112 + li * 64)}" fill="#6B1E33"/>`));
     card.push(`<rect x="${x - 14}" y="${top - 14}" width="${qs + 28}" height="${qs + 28}" rx="22" fill="#FFFFFF" stroke="#BC9A60" stroke-width="3"/>`);
     card.push(`<g transform="translate(${x} ${top}) scale(${qs / size})">${inner}</g>`);
-    card.push(`<path d="${centred(fonts.label, q.label.toUpperCase(), 22, x + qs / 2, top + qs + 70, 3.5)}" fill="${i ? '#A8656E' : '#7E5F2E'}"/>`);
-    card.push(`<path d="${centred(fonts.serifItalic, q.url.replace(/^https?:\/\//, '').replace(/\/$/, ''), 24, x + qs / 2, top + qs + 112)}" fill="#66544B"/>`);
+    card.push(`<path d="${centred(fonts.label, q.label.toUpperCase(), 22, x + qs / 2, top + qs + 70, 3.5)}" fill="${i ? '#8A2E45' : '#7A5A24'}"/>`);
+    card.push(`<path d="${centred(fonts.serifItalic, q.url.replace(/^https?:\/\//, '').replace(/\/$/, ''), 24, x + qs / 2, top + qs + 112)}" fill="#5A4646"/>`);
   });
   card.push(`<line x1="${W / 2}" y1="${top + 20}" x2="${W / 2}" y2="${top + qs - 20}" stroke="#D9C3A0" stroke-width="2" stroke-dasharray="4 10"/>`);
-  card.push(`<path d="${centred(fonts.serifItalic, 'Please scan, celebrate with us, and share the moments you capture.', 38, W / 2, 1810)}" fill="#4A3B36"/>`);
-  card.push(`<path d="${centred(fonts.label, `${wedding.ceremony.timeLabel}  ·  ${wedding.ceremony.venue.toUpperCase()}, ${wedding.ceremony.town.toUpperCase()}`, 24, W / 2, 1872, 4)}" fill="#7E5F2E"/>`);
+  card.push(`<path d="${centred(fonts.serifItalic, 'Please scan, celebrate with us, and share the moments you capture.', 38, W / 2, 1810)}" fill="#2F2224"/>`);
+  card.push(`<path d="${centred(fonts.label, `${wedding.ceremony.timeLabel}  ·  ${wedding.ceremony.venue.toUpperCase()}, ${wedding.ceremony.town.toUpperCase()}`, 24, W / 2, 1872, 4)}" fill="#7A5A24"/>`);
   const cardSvg = doc(`0 0 ${W} ${H}`, `<title>${names} — QR card</title>${card.join('')}`, { w: W, h: H });
   write(pub('qr', 'ayvon-aksa-qr-card.svg'), cardSvg);
   const cardPng = new Resvg(cardSvg, { fitTo: { mode: 'width', value: W } }).render().asPng();

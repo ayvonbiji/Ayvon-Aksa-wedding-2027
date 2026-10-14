@@ -2,7 +2,7 @@ import { wedding } from '../config/wedding';
 
 const c = wedding.ceremony;
 
-/** "2027-08-23T11:30:00+05:30" → local wall-clock parts in the ceremony timezone. */
+/** "2027-08-23T11:00:00+05:30" → local wall-clock parts in the ceremony timezone. */
 function localParts(iso: string) {
   const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?/);
   if (!m) throw new Error(`Invalid ceremony date: ${iso}`);

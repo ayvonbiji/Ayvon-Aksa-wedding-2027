@@ -102,7 +102,7 @@ function QrCard() {
     <div className="qr-pair">
       <div className="qr-pair__codes">
         <QrCode url={wedding.siteUrl} label="Scan to Visit Our Wedding Website" variant="site" downloads />
-        <QrCode url={uploadPageUrl()} label="Scan to Upload Wedding Memories" variant="upload" downloads />
+        <QrCode url={uploadPageUrl()} label="Scan to Share Your Wedding Memories" variant="upload" downloads />
       </div>
       <div className="qr-pair__print">
         <a className="btn btn--pill" href={asset('qr/ayvon-aksa-qr-card.pdf')} download>
@@ -122,11 +122,17 @@ export function Footer() {
     <footer className="footer">
       <Art {...art.cornerBL} className="corner corner--bl" />
       <Art {...art.cornerBR} className="corner corner--br" />
-      <Reveal className="footer__inner">
-        <Logo variant="monogram" className="footer__logo" />
-        <p className="footer__signoff script">{wedding.footer.signOff}</p>
+      <Reveal className="footer__inner" variant="fade">
+        <div className="footer__seal">
+          <svg className="footer__ring" viewBox="0 0 200 200" aria-hidden="true">
+            <circle cx="100" cy="100" r="94" pathLength="1" />
+            <circle cx="100" cy="100" r="86" pathLength="1" />
+          </svg>
+          <Logo variant="monogram" className="footer__logo" />
+        </div>
+        <p className="footer__signoff">{wedding.footer.signOff}</p>
         <Art {...art.divider} className="divider" />
-        <p className="label footer__date">{wedding.ceremony.shortDateLabel}</p>
+        <p className="footer__date">{wedding.ceremony.shortDateLabel}</p>
         <p className="footer__tagline">{wedding.footer.tagline}</p>
         <a className="footer__link" href={uploadPageUrl()}>
           <Icon name="camera" /> Share your wedding photos

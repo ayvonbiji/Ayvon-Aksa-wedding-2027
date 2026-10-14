@@ -128,7 +128,7 @@ export function Gallery() {
 
           <ul className="gallery__grid" aria-label="All photos">
             {photos.map((p, i) => (
-              <Reveal as="li" key={p.src} delay={(i % 4) * 70} className={`gallery__cell gallery__cell--${p.orientation || 'portrait'}`}>
+              <Reveal as="li" key={p.src} variant="zoom" delay={(i % 4) * 90} className={`gallery__cell gallery__cell--${p.orientation || 'portrait'}`}>
                 <button type="button" onClick={() => setViewer(i)} aria-label={`Open full screen: ${p.alt}`}>
                   <Photo p={p} sizes="(min-width: 900px) 300px, 46vw" />
                 </button>

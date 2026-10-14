@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Logo } from './Logo';
 
 export const NAV = [
@@ -25,6 +25,30 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>('home');
   const menuBtn = useRef<HTMLButtonElement>(null);
+  const list = useRef<HTMLUListElement>(null);
+  const [ink, setInk] = useState<{ left: number; width: number } | null>(null);
+
+  // Slide the gold indicator under the active link
+  useLayoutEffect(() => {
+    const place = () => {
+      const a = list.current?.querySelector<HTMLAnchorElement>(`a[href="#${active}"]`);
+      if (a && list.current && a.offsetParent) setInk({ left: a.offsetLeft, width: a.offsetWidth });
+    };
+    place();
+    window.addEventListener('resize', place);
+    document.fonts?.ready.then(place).catch(() => undefined);
+    return () => window.removeEventListener('resize', place);
+  }, [active]);
+
+  // Lock page scroll while the full-screen mobile menu is open
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+    return () => {
+      document.documentElement.style.overflow = prev;
+    };
+  }, [open]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -84,9 +108,10 @@ export function Header() {
           <span className="header__burger" aria-hidden="true" />
         </button>
         <nav id="site-nav" className="header__nav" aria-label="Main">
-          <ul>
-            {NAV.map((n) => (
-              <li key={n.id}>
+          <ul ref={list}>
+            {ink && <li className="nav-ink" aria-hidden="true" style={{ transform: `translateX(${ink.left}px)`, width: ink.width }} />}
+            {NAV.map((n, i) => (
+              <li key={n.id} style={{ ['--i' as string]: i }}>
                 <a href={`#${n.id}`} onClick={go(n.id)} aria-current={active === n.id ? 'location' : undefined}>
                   {n.label}
                 </a>
