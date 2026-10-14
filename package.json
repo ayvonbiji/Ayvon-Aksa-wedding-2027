@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "assets": "node --experimental-strip-types --no-warnings scripts/build-assets.mjs",
-    "images": "node scripts/optimize-images.mjs"
+    "images": "node scripts/optimize-images.mjs",
+    "build:docs": "npm run build && node scripts/publish-docs.mjs"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.3.0",
