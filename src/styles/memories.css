@@ -661,3 +661,68 @@ code {
 .manage-item__actions {
   margin-top: 0;
 }
+
+/* setup checklist */
+.manage-card--wide {
+  max-width: 560px;
+  text-align: left;
+}
+.manage-card--wide .manage-title {
+  text-align: center;
+}
+.setup {
+  margin-top: 0.4rem;
+  text-align: left;
+}
+.setup--compact {
+  margin: 0.8rem 0 0;
+}
+.setup__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+.setup__list li {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  background: rgba(255, 252, 247, 0.9);
+  border: 1px solid var(--line);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.setup__list .is-ok {
+  border-color: rgba(79, 96, 70, 0.45);
+}
+.setup__list .is-bad {
+  border-color: rgba(138, 46, 69, 0.5);
+  background: #fbf0f0;
+}
+.setup__mark {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-weight: 700;
+  color: #fff;
+  background: var(--sage-deep);
+}
+.is-bad .setup__mark {
+  background: var(--wine);
+}
+.is-wait .setup__mark {
+  background: var(--gold);
+}
+.setup__help {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  word-break: break-word;
+}

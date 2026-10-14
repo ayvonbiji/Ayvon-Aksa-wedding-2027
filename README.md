@@ -44,7 +44,8 @@ You can also run `npm run build:docs` yourself and commit `docs/`.
 
 | What | File |
 | --- | --- |
-| Names, date & time, venue, map link, site URL, messages, music, upload limits | `src/config/wedding.ts` |
+| Names, wedding date & time, venue, map link, site URL, messages, music, upload limits | `src/config/wedding.ts` |
+| Engagement (18 Aug 2027, 5:00 PM) — add the venue when confirmed | `src/config/wedding.ts` → `engagement` |
 | Love story chapters | `src/content/story.ts` |
 | Your personal photo gallery | `src/content/gallery.ts` |
 | Colours, fonts, spacing (design tokens) | top of `src/styles/global.css` |
@@ -52,6 +53,14 @@ You can also run `npm run build:docs` yourself and commit `docs/`.
 | Monogram & wordmark artwork | `scripts/logo-art.mjs` |
 | Logos, favicons, social image, QR codes, QR card generator | `scripts/build-assets.mjs` |
 | Guest-photo database & security rules | `supabase/migrations/001_wedding_memories.sql` |
+
+### Engagement card
+
+The wedding is the main event; the engagement appears as a smaller second card with its
+own Apple/Outlook and Google Calendar buttons. The countdown always targets the wedding.
+The engagement venue is **not set yet** — the card says "Venue to be announced". When it's
+confirmed, fill in `engagement.venue`, `engagement.place` and (optionally)
+`engagement.mapsUrl` in `src/config/wedding.ts`; "Get Directions" appears automatically.
 
 ### Love story
 
@@ -172,10 +181,23 @@ Your personal gallery ("Our Moments") and guest memories are completely separate
    ```
    Use lower-case e-mails exactly as created in step 3.
 5. **Project Settings → API**: copy the **Project URL** and the **anon / public** key.
-6. Put them in `src/config/wedding.ts` → `memories.supabaseUrl` and
-   `memories.supabaseAnonKey`. (Or set GitHub repository **variables** `SUPABASE_URL` and
-   `SUPABASE_ANON_KEY` under Settings → Secrets and variables → Actions → Variables.)
-7. Commit and push. Then open the upload page on your phone and send a test photo.
+6. Connect the website (writes both values into `src/config/wedding.ts`, refuses the
+   secret key, and checks the database if it can reach it):
+   ```bash
+   npm run connect-memories -- https://YOUR-PROJECT.supabase.co YOUR_ANON_PUBLIC_KEY
+   npm run build:docs
+   git add -A && git commit -m "Connect photo uploads" && git push
+   ```
+   (Alternatively edit `memories.supabaseUrl` / `memories.supabaseAnonKey` by hand, or set
+   repository variables `SUPABASE_URL` and `SUPABASE_ANON_KEY` for the build.)
+7. Open **/manage-memories/** → **Check setup**: every line should show ✓. Then scan the
+   upload QR on your phone, upload a test photo, approve it on /manage-memories/, and
+   refresh the homepage — it appears under "Our Wedding Memories".
+
+**Why the upload page says "Photo sharing opens soon":** that message appears only while
+step 6 hasn't been done (no Supabase URL/key in the website). It disappears automatically
+once the keys are added and the site is rebuilt. /manage-memories/ shows exactly which
+step is missing.
 
 > The **anon** key is designed to be public; all protection is in the database rules.
 > **Never** put the `service_role` key in this project.

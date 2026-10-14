@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { wedding } from '../src/config/wedding';
 import { CEREMONY_MS, remaining } from '../src/lib/time';
-import { buildICS, ceremonyTimes, googleCalendarUrl } from '../src/lib/calendar';
+import { buildICS, ceremonyTimes, googleCalendarUrl, engagementEvent, eventTimes } from '../src/lib/calendar';
 import { story } from '../src/content/story';
 import { gallery } from '../src/content/gallery';
 import fs from 'node:fs';
@@ -68,9 +68,9 @@ describe('calendar', () => {
 });
 
 describe('content', () => {
-  it('only one event exists — no other ceremonies mentioned in source', () => {
+  it('only the wedding and the engagement appear — no other functions', () => {
     const src = ['src', 'index.html'].flatMap((p) => walk(p)).map((f) => fs.readFileSync(f, 'utf8')).join('\n');
-    expect(src).not.toMatch(/engagement|reception|mehndi|haldi|sangeet|betrothal|manasammatham/i);
+    expect(src).not.toMatch(/reception|mehndi|mylanchi|haldi|sangeet|betrothal|manasammatham/i);
   });
   it('story chapters and gallery photos are well formed', () => {
     for (const c of story.chapters) {
@@ -95,5 +95,30 @@ describe('ceremony time', () => {
   it('no stale 11:30 time remains anywhere in the source', () => {
     const files = ['src', 'scripts', 'index.html', 'upload-memories', 'manage-memories', 'README.md'].flatMap((p) => walk(p));
     for (const f of files) expect(fs.readFileSync(f, 'utf8'), f).not.toMatch(/11[:.]30/);
+  });
+});
+
+describe('engagement (secondary event)', () => {
+  const e = wedding.engagement;
+  it('is Wednesday, 18 August 2027 at 5:00 PM IST', () => {
+    expect(new Date(Date.parse(e.startISO)).toISOString()).toBe('2027-08-18T11:30:00.000Z');
+    const ist = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }).format(Date.parse(e.startISO));
+    expect(ist).toMatch(/Wednesday, 18 August 2027/);
+    expect(ist).toMatch(/5:00\s?pm/i);
+    expect(e.dateLabel).toBe('Wednesday, 18 August 2027');
+    expect(e.timeLabel).toBe('5:00 PM IST');
+  });
+  it('does not invent a venue', () => {
+    expect(e.venue).toBe('');
+    expect(e.mapsUrl).toBe('');
+  });
+  it('has its own calendar event; the countdown still targets the wedding', () => {
+    const ics = buildICS(new Date('2026-10-14T00:00:00Z'), engagementEvent);
+    expect(ics).toContain('DTSTART;TZID=Asia/Kolkata:20270818T170000');
+    expect(ics).toContain('DTEND;TZID=Asia/Kolkata:20270818T190000');
+    expect(ics).not.toContain('LOCATION:');
+    expect(eventTimes(engagementEvent).localStart).toBe('20270818T170000');
+    expect(new URL(googleCalendarUrl(engagementEvent)).searchParams.get('dates')).toBe('20270818T113000Z/20270818T133000Z');
+    expect(new Date(CEREMONY_MS).toISOString()).toBe('2027-08-23T05:30:00.000Z');
   });
 });

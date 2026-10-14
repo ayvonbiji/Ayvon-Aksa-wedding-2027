@@ -39,6 +39,28 @@ export const wedding = {
     mapsUrl: 'https://www.google.com/maps/search/?api=1&query=St.+Thomas+Valiyapally%2C+Ranni%2C+Kerala%2C+India',
   },
 
+  /* ── Engagement (secondary event) ───────────────────────────────────────── */
+  engagement: {
+    show: true,
+    title: 'Engagement',
+    startISO: '2027-08-18T17:00:00+05:30',
+    timeZone: 'Asia/Kolkata',
+    durationMinutes: 120,
+    dateLabel: 'Wednesday, 18 August 2027',
+    shortDateLabel: '18 August 2027',
+    timeLabel: '5:00 PM IST',
+    /**
+     * Venue NOT yet confirmed. Fill these in when it is, e.g.
+     *   venue: 'Church name', place: 'Town, District',
+     *   mapsUrl: 'https://maps.app.goo.gl/…'  (Google Maps → Share → Copy link)
+     * Until then the card shows `venuePlaceholder` and hides "Get Directions".
+     */
+    venue: '',
+    place: '',
+    mapsUrl: '',
+    venuePlaceholder: 'Venue to be announced',
+  },
+
   /* ── Public website address ─────────────────────────────────────────────── */
   /**
    * The live URL of the site — used for sharing, the QR code, canonical and

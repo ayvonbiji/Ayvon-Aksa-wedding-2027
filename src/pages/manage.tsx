@@ -8,7 +8,7 @@ import { Logo } from '../components/Logo';
 import { Icon } from '../components/Icon';
 import {
   adminDelete, adminIsOwner, adminList, adminSetStatus, adminSetUploadsOpen, adminSettings,
-  memoriesConfigured, refresh, signIn, MemoryError, type AdminMemory, type Session,
+  memoriesConfigured, refresh, signIn, checkSetup, MemoryError, type AdminMemory, type Session, type SetupStep,
 } from '../lib/memories';
 
 /**
@@ -116,9 +116,10 @@ function Manage() {
   if (!memoriesConfigured()) {
     return (
       <Shell>
-        <div className="manage-card">
-          <h1 className="manage-title">Manage memories</h1>
-          <p>Photo uploads are not connected yet. Add your Supabase URL and anon key in <code>src/config/wedding.ts</code> (see README → Guest photo uploads).</p>
+        <div className="manage-card manage-card--wide">
+          <h1 className="manage-title">Connect photo uploads</h1>
+          <p>Guest uploads are built in, but this website is not connected to its photo storage yet.</p>
+          <SetupPanel autoRun />
         </div>
       </Shell>
     );
@@ -128,6 +129,7 @@ function Manage() {
     return (
       <Shell>
         <SignIn
+          token={session?.access_token}
           denied={owner === false ? session?.email : undefined}
           onSignedIn={(s) => {
             setOwner(null);
@@ -181,6 +183,7 @@ function Manage() {
           <button type="button" className="btn btn--ghost" onClick={() => keep(null)}>Sign out</button>
         </div>
       </div>
+      <SetupPanel token={session.access_token} compact />
 
       <div className="manage-tabs" role="tablist" aria-label="Photo status">
         {TABS.map((t) => (
@@ -260,7 +263,7 @@ function Shell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function SignIn({ onSignedIn, denied, onSignOut }: { onSignedIn: (s: Session) => void; denied?: string; onSignOut: () => void }) {
+function SignIn({ onSignedIn, denied, onSignOut, token }: { onSignedIn: (s: Session) => void; denied?: string; onSignOut: () => void; token?: string }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
@@ -272,6 +275,7 @@ function SignIn({ onSignedIn, denied, onSignOut }: { onSignedIn: (s: Session) =>
         <h1 className="manage-title">No access</h1>
         <p><strong>{denied}</strong> is not an owner of this album. Ask the site owner to add this e-mail to <code>memory_admins</code>.</p>
         <button type="button" className="btn btn--pill" onClick={onSignOut}>Sign in with another account</button>
+        <SetupPanel token={token} />
       </div>
     );
   }
@@ -304,7 +308,47 @@ function SignIn({ onSignedIn, denied, onSignOut }: { onSignedIn: (s: Session) =>
       </label>
       {err && <p className="upload-notice upload-notice--error" role="alert">{err}</p>}
       <button type="submit" className="btn btn--solid" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>
+      <SetupPanel />
     </form>
+  );
+}
+
+/** Lists each requirement for uploads with a ✓ / ✗ and how to fix it. */
+function SetupPanel({ token, autoRun = false, compact = false }: { token?: string; autoRun?: boolean; compact?: boolean }) {
+  const [steps, setSteps] = useState<SetupStep[] | null>(null);
+  const [busy, setBusy] = useState(false);
+  const run = async () => {
+    setBusy(true);
+    try {
+      setSteps(await checkSetup(token));
+    } finally {
+      setBusy(false);
+    }
+  };
+  useEffect(() => {
+    if (autoRun) run();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  return (
+    <div className={`setup ${compact ? 'setup--compact' : ''}`}>
+      {!steps ? (
+        <button type="button" className="btn btn--ghost" onClick={(e) => (e.preventDefault(), run())} disabled={busy}>
+          <Icon name="check" /> {busy ? 'Checking…' : 'Check setup'}
+        </button>
+      ) : (
+        <ol className="setup__list" aria-label="Upload setup checklist">
+          {steps.map((st) => (
+            <li key={st.label} className={st.ok === true ? 'is-ok' : st.ok === false ? 'is-bad' : 'is-wait'}>
+              <span className="setup__mark" aria-hidden="true">{st.ok === true ? '✓' : st.ok === false ? '✗' : '…'}</span>
+              <span>
+                <strong>{st.label}</strong>
+                <span className="sr-only">{st.ok === true ? ' — done' : st.ok === false ? ' — needs attention' : ' — not checked yet'}</span>
+                {st.ok !== true && <span className="setup__help">{st.help}</span>}
+              </span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
   );
 }
 

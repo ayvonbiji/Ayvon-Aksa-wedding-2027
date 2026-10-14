@@ -7,10 +7,86 @@ import { wedding } from '../config/wedding';
 
 const env = import.meta.env as Record<string, string | undefined>;
 export const SUPABASE_URL = (env.VITE_SUPABASE_URL || wedding.memories.supabaseUrl || '').replace(/\/$/, '');
-export const SUPABASE_ANON_KEY = env.VITE_SUPABASE_ANON_KEY || wedding.memories.supabaseAnonKey || '';
+const RAW_KEY = env.VITE_SUPABASE_ANON_KEY || wedding.memories.supabaseAnonKey || '';
 const BUCKET = wedding.memories.bucket;
 
+/** Role inside a Supabase JWT key ('anon', 'service_role', …) — '' if not a JWT. */
+export function keyRole(key: string): string {
+  try {
+    return JSON.parse(atob(key.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).role || '';
+  } catch {
+    return '';
+  }
+}
+/** Safety net: never use a secret key in the browser, even if pasted by mistake. */
+const isSecretKey = (k: string) => keyRole(k) === 'service_role' || k.startsWith('sb_secret_');
+if (RAW_KEY && isSecretKey(RAW_KEY)) {
+  console.error('Refusing to use a Supabase SECRET key in the website. Use the anon / public key.');
+}
+export const SUPABASE_ANON_KEY = RAW_KEY && !isSecretKey(RAW_KEY) ? RAW_KEY : '';
+
 export const memoriesConfigured = () => Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+
+export interface SetupStep {
+  label: string;
+  ok: boolean | null; // null = not checked
+  help: string;
+}
+
+/** Diagnoses what is missing for uploads to work (used by the owner page). */
+export async function checkSetup(token?: string): Promise<SetupStep[]> {
+  const steps: SetupStep[] = [];
+  const keysOk = memoriesConfigured();
+  steps.push({
+    label: 'Supabase URL and anon key are in the website',
+    ok: keysOk,
+    help: RAW_KEY && isSecretKey(RAW_KEY)
+      ? 'A SECRET key was entered — replace it with the anon / public key.'
+      : 'Run: npm run connect-memories -- https://YOUR-PROJECT.supabase.co YOUR_ANON_KEY, then rebuild and push.',
+  });
+  if (!keysOk) {
+    steps.push({ label: 'Database tables, security rules and storage bucket', ok: null, help: 'Checked after the keys are added.' });
+    steps.push({ label: 'Your owner account', ok: null, help: 'Checked after the keys are added.' });
+    return steps;
+  }
+  let dbOk = false;
+  try {
+    await rpc<boolean>('memory_uploads_open');
+    dbOk = true;
+  } catch {
+    dbOk = false;
+  }
+  steps.push({
+    label: 'Database tables and security rules',
+    ok: dbOk,
+    help: 'In Supabase → SQL Editor, paste and run supabase/migrations/001_wedding_memories.sql.',
+  });
+  let bucketOk = false;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/sign/${BUCKET}`, {
+      method: 'POST',
+      headers: { ...headers(token), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ expiresIn: 60, paths: ['setup-check.jpg'] }),
+    });
+    const text = await res.text();
+    bucketOk = res.ok || !/bucket not found/i.test(text);
+  } catch {
+    bucketOk = false;
+  }
+  steps.push({ label: 'Private photo storage bucket', ok: bucketOk, help: 'Created by the same SQL file — run it again if this fails.' });
+  if (token) {
+    let owner = false;
+    try {
+      owner = await adminIsOwner(token);
+    } catch {
+      owner = false;
+    }
+    steps.push({ label: 'You are an approved owner', ok: owner, help: "SQL Editor: insert into public.memory_admins (email) values ('your-email');" });
+  } else {
+    steps.push({ label: 'Your owner account', ok: null, help: 'Sign in below to check.' });
+  }
+  return steps;
+}
 
 export const uploadPageUrl = () => new URL(wedding.memories.uploadPath, wedding.siteUrl).href;
 
