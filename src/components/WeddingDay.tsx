@@ -3,6 +3,7 @@ import { downloadICS, engagementEvent, googleCalendarUrl, weddingEvent, type Cal
 import { Art, art } from './Art';
 import { Reveal } from './Reveal';
 import { Icon, type IconName } from './Icon';
+import { Ambience } from './Ambience';
 
 interface Row {
   icon: IconName;
@@ -72,11 +73,18 @@ function EventCard({ ev, index }: { ev: EventData; index: number }) {
       as="article"
       className={`event-card event-card--${ev.key}`}
       variant="up"
-      delay={index * 180}
+      delay={300 + index * 220}
       aria-labelledby={`${id}-title`}
     >
+      <span className="event-card__light" aria-hidden="true" />
       <span className="event-card__frame" aria-hidden="true" />
-      <Art {...(ev.key === 'engagement' ? art.bouquetAlt : art.bouquet)} className="event-card__flowers" />
+      <Art {...art.goldCorner} className="event-card__corner event-card__corner--tl" />
+      <Art {...art.goldCorner} className="event-card__corner event-card__corner--tr" />
+      <Art {...art.goldCorner} className="event-card__corner event-card__corner--bl" />
+      <Art {...art.goldCorner} className="event-card__corner event-card__corner--br" />
+      <Art {...art.sideVine} className="event-card__vine event-card__vine--l" />
+      <Art {...art.sideVine} className="event-card__vine event-card__vine--r" />
+      <Art {...art.roseSpray} className="event-card__flowers" />
 
       <header className="event-card__head">
         <p className="event-card__ribbon stagger" style={s()}>
@@ -86,7 +94,7 @@ function EventCard({ ev, index }: { ev: EventData; index: number }) {
           {ev.title}
         </h3>
         <p className="event-card__subtitle stagger" style={s()}>{couple}</p>
-        <Art {...art.divider} className="event-card__divider stagger" style={s()} />
+        <Art {...art.heartDivider} className="event-card__divider stagger" style={s()} />
       </header>
 
       <dl className="event-card__rows">
@@ -128,15 +136,21 @@ export function WeddingDay() {
   const list = events();
   return (
     <section id="wedding-day" className="section wedding-day" aria-labelledby="wedding-day-title">
-      <Art {...art.cornerTR} className="corner corner--tr corner--soft" />
-      <Art {...art.cornerBL} className="corner corner--bl corner--soft" />
-      <span className="wedding-day__line wedding-day__line--l" aria-hidden="true" />
-      <span className="wedding-day__line wedding-day__line--r" aria-hidden="true" />
-      <Reveal className="section__head">
-        <Art {...art.bow} className="section__bow" />
+      <Reveal className="wedding-day__bg" variant="fade" aria-hidden="true">
+        <span className="wedding-day__spot" />
+        <span className="wedding-day__arch wedding-day__arch--l" />
+        <span className="wedding-day__arch wedding-day__arch--r" />
+      </Reveal>
+      <Ambience petals={9} sparks={18} bokeh={6} seed={40} />
+      <Art {...art.roseCorner} className="wd-roses wd-roses--tl" />
+      <Art {...art.roseCorner} className="wd-roses wd-roses--tr" />
+      <Art {...art.roseCorner} className="wd-roses wd-roses--bl" />
+      <Art {...art.roseCorner} className="wd-roses wd-roses--br" />
+      <Reveal className="section__head wedding-day__head" delay={150}>
+        <Art {...art.fleuron} className="wedding-day__fleuron" />
         <h2 id="wedding-day-title" className="section__title">Our Special Days</h2>
-        <p className="section__lead">Join us as we celebrate</p>
-        <Art {...art.divider} className="divider" />
+        <p className="section__lead">Love is all we celebrate</p>
+        <Art {...art.goldDivider} className="wedding-day__divider" />
       </Reveal>
 
       <div className={`events events--${list.length}`}>

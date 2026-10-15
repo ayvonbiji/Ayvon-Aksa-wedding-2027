@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { wedding } from '../config/wedding';
 import { Art, art } from './Art';
 import { Logo } from './Logo';
+import { Ambience } from './Ambience';
 import { asset, prefersReducedMotion } from '../lib/assets';
 import { useScrollLock } from '../lib/hooks';
 import '../styles/cover.css';
@@ -31,16 +32,6 @@ const rnd = (i: number, k: number) => {
 };
 const v = (o: Record<string, string | number>) => o as React.CSSProperties;
 
-const PETALS = Array.from({ length: 14 }, (_, i) =>
-  v({
-    left: `${Math.round(rnd(i, 1) * 100)}%`,
-    '--size': `${Math.round(12 + rnd(i, 2) * 16)}px`,
-    '--dur': `${(11 + rnd(i, 3) * 9).toFixed(1)}s`,
-    '--delay': `${(-rnd(i, 4) * 18).toFixed(1)}s`,
-    '--drift': `${Math.round((rnd(i, 5) - 0.5) * 220)}px`,
-    '--blur': i % 5 === 0 ? '2.5px' : '0px',
-  }),
-);
 const BURST = Array.from({ length: 12 }, (_, i) => {
   const a = (i / 12) * Math.PI * 2 + rnd(i, 6) * 0.4;
   const d = 140 + rnd(i, 7) * 160;
@@ -52,24 +43,6 @@ const BURST = Array.from({ length: 12 }, (_, i) => {
     animationDelay: `${(0.35 + rnd(i, 10) * 0.25).toFixed(2)}s`,
   });
 });
-const SPARKS = Array.from({ length: 22 }, (_, i) =>
-  v({
-    left: `${Math.round(rnd(i, 11) * 100)}%`,
-    top: `${Math.round(30 + rnd(i, 12) * 70)}%`,
-    '--size': `${(2 + rnd(i, 13) * 3).toFixed(1)}px`,
-    '--dur': `${(6 + rnd(i, 14) * 6).toFixed(1)}s`,
-    '--delay': `${(-rnd(i, 15) * 10).toFixed(1)}s`,
-  }),
-);
-const BOKEH = Array.from({ length: 7 }, (_, i) =>
-  v({
-    left: `${Math.round(5 + rnd(i, 16) * 90)}%`,
-    top: `${Math.round(10 + rnd(i, 17) * 80)}%`,
-    '--size': `${Math.round(40 + rnd(i, 18) * 90)}px`,
-    '--delay': `${(-rnd(i, 19) * 8).toFixed(1)}s`,
-  }),
-);
-
 export function InvitationCover({ onOpened }: Props) {
   const [stage, setStage] = useState<Stage>('welcome');
   const openBtn = useRef<HTMLButtonElement>(null);
@@ -121,15 +94,7 @@ export function InvitationCover({ onOpened }: Props) {
       {/* ── backdrop: velvet, bokeh, particles, petals, roses, pendants ── */}
       <div className="invite__bg" aria-hidden="true">
         <span className="invite__glow" />
-        {BOKEH.map((st, i) => (
-          <span key={`b${i}`} className="bokeh" style={st} />
-        ))}
-        {SPARKS.map((st, i) => (
-          <span key={`s${i}`} className="spark" style={st} />
-        ))}
-        {PETALS.map((st, i) => (
-          <span key={`p${i}`} className={`fpetal fpetal--${i % 3}`} style={st} />
-        ))}
+        <Ambience petals={14} sparks={22} bokeh={7} />
         <Art {...art.hanging} className="invite__pendant" />
         <Art {...art.roseCorner} className="invite__roses invite__roses--tl" />
         <Art {...art.roseCorner} className="invite__roses invite__roses--br" />

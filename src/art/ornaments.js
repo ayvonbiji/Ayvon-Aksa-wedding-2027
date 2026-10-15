@@ -359,3 +359,71 @@ export function goldDivider({ p = 'aa' } = {}) {
     `<path d="M150 5 L156 12 L150 19 L144 12Z" fill="url(#${p}-gold)"/>` +
     `<circle cx="8" cy="12" r="2" fill="url(#${p}-gold)"/><circle cx="292" cy="12" r="2" fill="url(#${p}-gold)"/>`;
 }
+
+/* ── Event-card artwork ──────────────────────────────────────────────────── */
+
+/** Horizontal rose spray for the top of a card (burgundy centre, cream sides), 320×160. */
+export function roseSpray({ p = 'aa' } = {}) {
+  let g = '';
+  g += sprig(150, 92, 150, { dir: 188, p, curl: -0.22 });
+  g += sprig(170, 92, 150, { dir: -8, p, curl: 0.22 });
+  [[120, 70, 50, 200], [200, 70, 50, -20], [140, 110, 46, 150], [180, 110, 46, 30], [96, 104, 40, 170], [224, 104, 40, 10]].forEach(
+    ([x, y, l, r], i) => (g += i % 3 === 2 ? goldLeaf(x, y, l, r, { p }) : leaf(x, y, l, r, { p })),
+  );
+  [[60, 96, 30, 196], [262, 96, 30, -16]].forEach(([x, y, l, r]) => (g += goldLeaf(x, y, l, r, { p })));
+  g += breath(110, 52, 22, 9, 3) + breath(212, 52, 22, 9, 7);
+  g += bud(70, 84, 10, -80, { p }) + bud(250, 84, 10, 80, { p });
+  g += rose(98, 98, 19, { tone: 'blush', rot: 30, p });
+  g += rose(222, 98, 19, { tone: 'blush', rot: 80, p });
+  g += rose(122, 90, 28, { tone: 'ivory', rot: 15, p });
+  g += rose(198, 90, 28, { tone: 'ivory', rot: 50, p });
+  g += rose(160, 80, 38, { tone: 'deep', rot: 20, p });
+  [[86, 74, 6], [236, 74, 6], [146, 122, 6], [176, 124, 6]].forEach(([x, y, r]) => (g += blossom(x, y, r)));
+  return g;
+}
+
+/** Gold filigree for the top-left corner of a card, 110×110 (rotate for other corners). */
+export function goldCorner({ p = 'aa' } = {}) {
+  return `<g fill="none" stroke="url(#${p}-goldline)" stroke-width="1.3" stroke-linecap="round">` +
+    '<path d="M8 100 C8 50 20 20 60 12 C78 9 92 10 104 8"/>' +
+    '<path d="M16 96 C16 58 28 30 58 22 C70 19 80 20 88 22"/>' +
+    '<path d="M60 12 C52 22 56 32 66 30 C74 28 72 18 64 20"/>' +
+    '<path d="M8 60 C18 52 28 56 26 66 C24 74 14 72 16 64"/>' +
+    '<path d="M24 24 C34 30 34 40 26 42 C20 43 18 36 24 34"/>' +
+    '</g>' +
+    goldLeaf(30, 30, 18, 225, { p }) + goldLeaf(30, 30, 14, 180, { p }) + goldLeaf(30, 30, 14, 270, { p }) +
+    `<circle cx="104" cy="8" r="2.4" fill="url(#${p}-gold)"/><circle cx="8" cy="100" r="2.4" fill="url(#${p}-gold)"/>` +
+    `<path d="M14 14 L19 9 L24 14 L19 19Z" fill="url(#${p}-gold)"/>`;
+}
+
+/** Slim vertical vine with small blush roses for a card's side border, 50×260. */
+export function sideVine({ p = 'aa' } = {}) {
+  let g = `<path d="M22 4 C34 60 10 120 26 180 C34 210 24 236 20 256" fill="none" stroke="#6E8061" stroke-width="1.4" stroke-linecap="round"/>`;
+  [[24, 24, 26, -30], [20, 50, 24, 210], [26, 78, 26, -20], [18, 104, 24, 200], [26, 150, 26, -24], [20, 176, 22, 214], [26, 206, 24, -30], [20, 232, 22, 200]].forEach(
+    ([x, y, l, r], i) => (g += i % 4 === 3 ? goldLeaf(x, y, l, r, { p }) : leaf(x, y, l, r, { p })),
+  );
+  g += rose(22, 128, 13, { tone: 'blush', rot: 30, p });
+  g += rose(30, 112, 9, { tone: 'ivory', rot: 60, p });
+  g += blossom(14, 140, 5) + blossom(30, 196, 5) + blossom(16, 62, 4, { color: '#F1D3D3' });
+  g += breath(30, 144, 10, 5, 4);
+  return g;
+}
+
+/** Small gold fleuron for above section titles, 120×36. */
+export function fleuron({ p = 'aa' } = {}) {
+  return `<line x1="0" y1="24" x2="40" y2="24" stroke="#C9A86A" stroke-width="1"/><line x1="80" y1="24" x2="120" y2="24" stroke="#C9A86A" stroke-width="1"/>` +
+    `<g fill="url(#${p}-gold)">` +
+    '<path d="M60 4 C66 12 66 20 60 30 C54 20 54 12 60 4Z"/>' +
+    '<path d="M58 26 C50 14 40 16 42 24 C44 30 52 28 52 24 C50 26 46 24 48 22 C50 20 56 22 58 26Z"/>' +
+    '<path d="M62 26 C70 14 80 16 78 24 C76 30 68 28 68 24 C70 26 74 24 72 22 C70 20 64 22 62 26Z"/>' +
+    '<rect x="52" y="29" width="16" height="2.4" rx="1.2"/></g>' +
+    `<circle cx="40" cy="24" r="2" fill="url(#${p}-gold)"/><circle cx="80" cy="24" r="2" fill="url(#${p}-gold)"/>`;
+}
+
+/** Divider with a small gold heart, 220×20. */
+export function heartDivider({ p = 'aa' } = {}) {
+  return `<line x1="14" y1="10" x2="92" y2="10" stroke="#C9A86A" stroke-width="1"/><line x1="128" y1="10" x2="206" y2="10" stroke="#C9A86A" stroke-width="1"/>` +
+    `<circle cx="100" cy="10" r="2" fill="url(#${p}-gold)"/><circle cx="120" cy="10" r="2" fill="url(#${p}-gold)"/>` +
+    `<path d="M110 16 C104 12 102 9 102 7 C102 5 104 4 106 4 C108 4 109 5 110 6.5 C111 5 112 4 114 4 C116 4 118 5 118 7 C118 9 116 12 110 16Z" fill="url(#${p}-gold)"/>` +
+    `<path d="M10 10 L14 7 L18 10 L14 13Z" fill="url(#${p}-gold)"/><path d="M202 10 L206 7 L210 10 L206 13Z" fill="url(#${p}-gold)"/>`;
+}

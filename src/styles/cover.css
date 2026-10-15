@@ -53,100 +53,6 @@
   }
 }
 
-.bokeh {
-  position: absolute;
-  width: var(--size);
-  height: var(--size);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 210, 150, 0.35), rgba(255, 210, 150, 0) 70%);
-  filter: blur(6px);
-  animation: bokeh 8s ease-in-out var(--delay) infinite alternate;
-}
-@keyframes bokeh {
-  from {
-    opacity: 0.25;
-    transform: scale(0.85);
-  }
-  to {
-    opacity: 0.8;
-    transform: scale(1.15) translateY(-14px);
-  }
-}
-
-.spark {
-  position: absolute;
-  width: var(--size);
-  height: var(--size);
-  border-radius: 50%;
-  background: radial-gradient(circle, #fff7df 0%, #e9c983 45%, transparent 72%);
-  box-shadow: 0 0 6px rgba(255, 220, 150, 0.8);
-  opacity: 0;
-  animation: rise var(--dur) linear var(--delay) infinite;
-}
-@keyframes rise {
-  0% {
-    opacity: 0;
-    transform: translateY(0) scale(0.6);
-  }
-  15%,
-  70% {
-    opacity: 0.95;
-  }
-  50% {
-    transform: translateY(-22vh) translateX(10px) scale(1.2);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-45vh) translateX(-6px) scale(0.6);
-  }
-}
-
-/* falling rose petals */
-.fpetal,
-.burst {
-  --c1: #b23a56;
-  --c2: #6b1e33;
-  width: var(--size);
-  height: calc(var(--size) * 0.82);
-  border-radius: 62% 38% 60% 40% / 70% 52% 48% 30%;
-  background: radial-gradient(120% 90% at 30% 25%, var(--c1), var(--c2) 75%);
-  box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.18);
-}
-.fpetal--1 {
-  --c1: #f8dcdc;
-  --c2: #d993a0;
-}
-.fpetal--2 {
-  --c1: #fff6ea;
-  --c2: #e8cfa8;
-}
-.fpetal {
-  position: absolute;
-  top: -8%;
-  opacity: 0;
-  filter: blur(var(--blur));
-  animation: petalFall var(--dur) linear var(--delay) infinite;
-}
-@keyframes petalFall {
-  0% {
-    opacity: 0;
-    transform: translate3d(0, 0, 0) rotate(0deg) rotateX(0deg);
-  }
-  8% {
-    opacity: 0.9;
-  }
-  50% {
-    transform: translate3d(calc(var(--drift) * 0.6), 55vh, 0) rotate(200deg) rotateX(160deg);
-  }
-  92% {
-    opacity: 0.8;
-  }
-  100% {
-    opacity: 0;
-    transform: translate3d(var(--drift), 118vh, 0) rotate(420deg) rotateX(340deg);
-  }
-}
-
 /* rose arrangements and pendant */
 .invite__roses {
   position: absolute;
@@ -718,7 +624,7 @@
   }
 }
 
-/* petal burst */
+/* petal burst (shape/colours come from ambience.css) */
 .burst {
   position: absolute;
   left: 50%;
