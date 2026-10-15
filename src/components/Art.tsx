@@ -13,10 +13,12 @@ interface ArtProps {
   viewBox: string;
   className?: string;
   style?: React.CSSProperties;
+  /** SVG preserveAspectRatio (default: fit inside the box). */
+  fit?: string;
 }
 
 /** Decorative inline SVG (hidden from assistive technology). */
-export const Art = memo(function Art({ svg, viewBox, className, style }: ArtProps) {
+export const Art = memo(function Art({ svg, viewBox, className, style, fit = 'xMidYMid meet' }: ArtProps) {
   return (
     <svg
       className={className}
@@ -24,7 +26,7 @@ export const Art = memo(function Art({ svg, viewBox, className, style }: ArtProp
       viewBox={viewBox}
       aria-hidden="true"
       focusable="false"
-      preserveAspectRatio="xMidYMid meet"
+      preserveAspectRatio={fit}
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );

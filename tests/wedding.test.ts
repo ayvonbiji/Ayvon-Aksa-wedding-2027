@@ -125,3 +125,27 @@ describe('engagement (secondary event)', () => {
     expect(new Date(CEREMONY_MS).toISOString()).toBe('2027-08-23T05:30:00.000Z');
   });
 });
+
+describe('wedding invitation card', () => {
+  it('has both families with the correct spellings', () => {
+    expect(wedding.groom).toMatchObject({ full: 'Ayvon Joseph Biji', relation: 'Son of', parents: 'Biji Joseph & Asha Kuriakose', house: 'Kadackal' });
+    expect(wedding.bride).toMatchObject({ full: 'Aksa Saji Kunnel', relation: 'Daughter of', parents: 'Kunnel Sajimon Kurian & Mathew Anjumole', house: 'Kunnel' });
+  });
+  it('quotes Job 23:14 (GNT) as verified', () => {
+    expect(wedding.invitation.verse).toEqual({ text: 'He will fulfill what he has planned for me.', reference: 'Job 23:14', translation: 'GNT' });
+  });
+  it('keeps the event times: engagement 5:00 PM, wedding 11:00 AM IST', () => {
+    expect(wedding.engagement.startISO).toBe('2027-08-18T17:00:00+05:30');
+    expect(wedding.ceremony.startISO).toBe('2027-08-23T11:00:00+05:30');
+    expect(wedding.ceremony.timeLabel).toBe('11:00 AM IST');
+  });
+  it('has the photo and generated downloads in /public', () => {
+    for (const f of [wedding.invitation.photo, wedding.invitation.photoSmall, wedding.invitation.pdf, wedding.invitation.image]) {
+      const file = path.join(__dirname, '..', 'public', f);
+      expect(fs.existsSync(file), f).toBe(true);
+      expect(fs.statSync(file).size).toBeGreaterThan(10_000);
+    }
+    const pdf = fs.readFileSync(path.join(__dirname, '..', 'public', wedding.invitation.pdf));
+    expect(pdf.subarray(0, 5).toString()).toBe('%PDF-');
+  });
+});

@@ -427,3 +427,87 @@ export function heartDivider({ p = 'aa' } = {}) {
     `<path d="M110 16 C104 12 102 9 102 7 C102 5 104 4 106 4 C108 4 109 5 110 6.5 C111 5 112 4 114 4 C116 4 118 5 118 7 C118 9 116 12 110 16Z" fill="url(#${p}-gold)"/>` +
     `<path d="M10 10 L14 7 L18 10 L14 13Z" fill="url(#${p}-gold)"/><path d="M202 10 L206 7 L210 10 L206 13Z" fill="url(#${p}-gold)"/>`;
 }
+
+/* ── Wedding invitation card artwork ─────────────────────────────────────── */
+
+/**
+ * Sunlit church interior for the invitation card: a tall pointed (Gothic)
+ * window with a gold cross, stone pillars and white flower garlands climbing
+ * the arch. Drawn in a 400×1000 box; the lower part is plain wall so a photo
+ * can stand in front of it.
+ */
+export function churchScene({ p = 'aa' } = {}) {
+  let k = 7;
+  const rnd = () => ((k = (k * 9301 + 49297) % 233280) / 233280);
+  const qb = (a, b, c, t) => (1 - t) * (1 - t) * a + 2 * (1 - t) * t * b + t * t * c;
+  let g = '';
+  g += `<linearGradient id="${p}-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7EEDD"/><stop offset=".6" stop-color="#F4E7D1"/><stop offset="1" stop-color="#EFDFC4"/></linearGradient>`;
+  g += `<radialGradient id="${p}-glass" cx=".5" cy=".38" r=".7"><stop offset="0" stop-color="#FFFFFB"/><stop offset=".45" stop-color="#FFF7E4"/><stop offset="1" stop-color="#F1DDB4"/></radialGradient>`;
+  g += `<radialGradient id="${p}-halo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFFDF4" stop-opacity=".95"/><stop offset="1" stop-color="#FFF6E0" stop-opacity="0"/></radialGradient>`;
+  g += `<rect width="400" height="1000" fill="url(#${p}-wall)"/>`;
+  // outer recess + pillars
+  g += `<path d="M48 1000 V380 Q48 150 200 40 Q352 150 352 380 V1000Z" fill="#F1E3CB" stroke="#E2CDA6" stroke-width="2"/>`;
+  g += `<path d="M66 1000 V384 Q66 170 200 66 Q334 170 334 384 V1000Z" fill="#F6ECDA" stroke="#E7D5B2" stroke-width="1.4"/>`;
+  for (const x of [14, 352]) {
+    g += `<rect x="${x}" y="300" width="34" height="700" fill="#F3E6CF" stroke="#E2CDA6" stroke-width="1.4"/>`;
+    g += `<rect x="${x - 4}" y="290" width="42" height="14" rx="2" fill="#EEDDBF" stroke="#DCC59B"/>`;
+    g += `<line x1="${x + 11}" y1="306" x2="${x + 11}" y2="1000" stroke="#E6D4B2" stroke-width="1"/><line x1="${x + 23}" y1="306" x2="${x + 23}" y2="1000" stroke="#E6D4B2" stroke-width="1"/>`;
+  }
+  // glowing window
+  g += `<ellipse cx="200" cy="330" rx="190" ry="300" fill="url(#${p}-halo)"/>`;
+  g += `<path d="M104 690 V392 Q104 210 200 122 Q296 210 296 392 V690Z" fill="url(#${p}-glass)" stroke="#D9C095" stroke-width="3"/>`;
+  // light rays
+  g += `<g opacity=".45" fill="#FFFFFF">` +
+    `<path d="M150 200 L60 1000 H120Z"/><path d="M200 160 L170 1000 H240Z"/><path d="M250 200 L300 1000 H350Z"/></g>`;
+  // tracery: mullions, transoms and a quatrefoil
+  g += `<g fill="none" stroke="#E2CC9E" stroke-width="2.2">` +
+    `<line x1="152" y1="250" x2="152" y2="690"/><line x1="248" y1="250" x2="248" y2="690"/>` +
+    `<line x1="104" y1="470" x2="296" y2="470"/><line x1="104" y1="580" x2="296" y2="580"/>` +
+    `<path d="M152 250 Q152 200 200 164 Q248 200 248 250"/></g>`;
+  // gold cross
+  g += `<g fill="url(#${p}-gold)" stroke="#8A6629" stroke-opacity=".35" stroke-width="1">` +
+    `<rect x="191" y="214" width="18" height="372" rx="2"/><rect x="138" y="292" width="124" height="17" rx="2"/></g>`;
+  g += `<rect x="186" y="586" width="28" height="10" rx="2" fill="url(#${p}-gold)"/><rect x="178" y="596" width="44" height="10" rx="2" fill="url(#${p}-gold)"/>`;
+  // sill and steps
+  g += `<rect x="92" y="690" width="216" height="16" fill="#EBD9B9" stroke="#DCC59B"/>`;
+  g += `<rect x="66" y="706" width="268" height="294" fill="#F5EAD7"/>`;
+  g += `<path d="M66 820 H334 M66 900 H334" stroke="#E8D6B5" stroke-width="1.4"/>`;
+  // flower garlands climbing the arch and pillars
+  const garland = (pts) => {
+    let s = '';
+    pts.forEach(([x, y]) => {
+      const j = () => (rnd() - 0.5) * 18;
+      s += leaf(x + j(), y + j(), 16 + rnd() * 10, rnd() * 360, { p });
+      if (rnd() > 0.35) s += leaf(x + j(), y + j(), 12 + rnd() * 8, rnd() * 360, { p, light: true });
+    });
+    pts.forEach(([x, y], i) => {
+      const j = () => (rnd() - 0.5) * 16;
+      s += blossom(x + j(), y + j(), 6 + rnd() * 5, { color: '#FFFDF8', center: '#D8BC7C' });
+      if (i % 2) s += blossom(x + j(), y + j(), 4 + rnd() * 3, { color: '#FFFFFF', center: '#E2C98E' });
+      if (i % 5 === 2) s += rose(x + j() * 0.5, y + j() * 0.5, 9 + rnd() * 4, { tone: 'ivory', rot: rnd() * 360, p });
+    });
+    return s;
+  };
+  const arch = [];
+  for (let t = 0; t <= 1.0001; t += 0.06) arch.push([qb(48, 48, 200, t), qb(380, 150, 40, t)]);
+  for (let t = 0; t <= 1.0001; t += 0.06) arch.push([qb(200, 352, 352, t), qb(40, 150, 380, t)]);
+  const pillars = [];
+  for (let y = 400; y <= 940; y += 34) pillars.push([48 + Math.sin(y / 40) * 8, y], [352 + Math.cos(y / 40) * 8, y]);
+  g += garland(arch) + garland(pillars);
+  return g;
+}
+
+/** Interlocked wedding rings in a fine gold circle (engagement badge), 60×60. */
+export function ringsBadge({ p = 'aa' } = {}) {
+  return `<circle cx="30" cy="30" r="27" fill="#FFFBF3" stroke="url(#${p}-goldline)" stroke-width="1.6"/>` +
+    `<circle cx="30" cy="30" r="23" fill="none" stroke="url(#${p}-goldline)" stroke-width=".7"/>` +
+    `<g fill="none" stroke="url(#${p}-gold)" stroke-width="2.6"><circle cx="24.5" cy="33" r="8.5"/><circle cx="35.5" cy="33" r="8.5"/></g>` +
+    `<path d="M24.5 21.5 L27.5 18 L24.5 15 L21.5 18Z" fill="url(#${p}-gold)"/>`;
+}
+
+/** Latin cross in a fine gold circle (wedding badge), 60×60. */
+export function crossBadge({ p = 'aa' } = {}) {
+  return `<circle cx="30" cy="30" r="27" fill="#FFFBF3" stroke="url(#${p}-goldline)" stroke-width="1.6"/>` +
+    `<circle cx="30" cy="30" r="23" fill="none" stroke="url(#${p}-goldline)" stroke-width=".7"/>` +
+    `<g fill="url(#${p}-gold)"><rect x="28" y="14" width="4" height="31" rx="1"/><rect x="20" y="21" width="20" height="4" rx="1"/></g>`;
+}

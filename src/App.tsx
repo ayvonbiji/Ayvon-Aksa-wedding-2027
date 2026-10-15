@@ -4,6 +4,7 @@ import { InvitationCover } from './components/InvitationCover';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { WeddingDay } from './components/WeddingDay';
+import { WeddingInvitation } from './components/WeddingInvitation';
 import { LoveStory } from './components/LoveStory';
 import { Gallery } from './components/Gallery';
 import { Memories } from './components/Memories';
@@ -46,6 +47,7 @@ export default function App() {
         <main id="main">
           <Hero nowMs={nowMs} />
           <WeddingDay />
+          <WeddingInvitation />
           <Verse />
           <LoveStory />
           <Gallery />
