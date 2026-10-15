@@ -45,14 +45,6 @@ export const gallery = {
       position: '50% 30%',
     },
     {
-      src: 'images/gallery/ayvon-aksa-03.webp',
-      thumb: 'images/gallery/ayvon-aksa-03-thumb.webp',
-      alt: 'A cheerful selfie of Aksa and Ayvon in a pine forest, Ayvon giving a thumbs-up',
-      caption: 'Lost in the pines, found in each other.',
-      orientation: 'landscape',
-      position: '45% 40%',
-    },
-    {
       src: 'images/gallery/ayvon-aksa-04.webp',
       thumb: 'images/gallery/ayvon-aksa-04-thumb.webp',
       alt: 'Aksa in a black leaf-print kurta and Ayvon in a sage shirt standing in front of a pink wall',
