@@ -13,7 +13,8 @@
  *    thumb        (optional) smaller version for the grid (falls back to src)
  *    alt          (required) describe the photo — read aloud by screen readers
  *    caption      (optional) short line shown in the lightbox / slideshow
- *    orientation  (optional) 'portrait' | 'landscape' | 'square' — sets the grid shape
+ *    orientation  (optional) 'portrait' | 'landscape' | 'square' | 'wide' — sets the grid shape
+ *                 ('wide' = a full-width feature tile, ideal for group photos)
  *    position     (optional) CSS object-position to adjust cropping, e.g. '50% 20%'
  *                 (first value = horizontal, second = vertical; lower % = show more top/left)
  *
@@ -25,7 +26,7 @@ export interface GalleryPhoto {
   thumb?: string;
   alt: string;
   caption?: string;
-  orientation?: 'portrait' | 'landscape' | 'square';
+  orientation?: 'portrait' | 'landscape' | 'square' | 'wide';
   position?: string;
 }
 
@@ -59,6 +60,22 @@ export const gallery = {
       caption: 'Sunshine, swings and us.',
       orientation: 'landscape',
       position: '60% 45%',
+    },
+    {
+      src: 'images/gallery/ayvon-aksa-pines-2.webp',
+      thumb: 'images/gallery/ayvon-aksa-pines-2-thumb.webp',
+      alt: 'Ayvon in a white knit shirt and Aksa in a white-and-blue floral top, smiling together among tall pine trees',
+      caption: 'Lost in the pines, together in our favourite moments.',
+      orientation: 'landscape',
+      position: '45% 30%',
+    },
+    {
+      src: 'images/gallery/family-together.webp',
+      thumb: 'images/gallery/family-together-thumb.webp',
+      alt: 'Ayvon and Aksa standing with four family members, all smiling, in front of a white wall',
+      caption: 'Together with our families, celebrating the love that brings us together.',
+      orientation: 'wide',
+      position: '50% 20%',
     },
   ] as GalleryPhoto[],
 };

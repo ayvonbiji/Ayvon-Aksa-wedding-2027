@@ -6,7 +6,7 @@ import { Reveal } from './Reveal';
 import { Lightbox } from './Lightbox';
 import { Icon } from './Icon';
 
-function Photo({ p, sizes, eager = false }: { p: GalleryPhoto; sizes?: string; eager?: boolean }) {
+function Photo({ p, sizes, eager = false, whole = false }: { p: GalleryPhoto; sizes?: string; eager?: boolean; whole?: boolean }) {
   const [ok, setOk] = useState(true);
   if (!ok) {
     return (
@@ -16,6 +16,24 @@ function Photo({ p, sizes, eager = false }: { p: GalleryPhoto; sizes?: string; e
     );
   }
   const thumb = p.thumb ? asset(p.thumb) : asset(p.src);
+  if (whole) {
+    // Show the entire photo (no cropping) over a soft, blurred copy of itself.
+    return (
+      <span className="photo-whole">
+        <img className="photo-whole__backdrop" src={thumb} alt="" aria-hidden="true" loading={eager ? 'eager' : 'lazy'} decoding="async" />
+        <img
+          className="photo-whole__img"
+          src={thumb}
+          srcSet={p.thumb ? `${asset(p.thumb)} 800w, ${asset(p.src)} 1600w` : undefined}
+          sizes={sizes}
+          alt={p.alt}
+          loading={eager ? 'eager' : 'lazy'}
+          decoding="async"
+          onError={() => setOk(false)}
+        />
+      </span>
+    );
+  }
   return (
     <img
       src={thumb}
@@ -91,7 +109,7 @@ export function Gallery() {
                     onClick={() => setViewer(i)}
                     aria-label={`Open photo ${i + 1} of ${count} full screen: ${p.alt}`}
                   >
-                    <Photo p={p} sizes="(min-width: 700px) 560px, 92vw" eager={i === 0} />
+                    <Photo p={p} sizes="(min-width: 700px) 560px, 92vw" eager={i === 0} whole={p.orientation === 'landscape' || p.orientation === 'wide'} />
                   </button>
                 ))}
               </div>
@@ -130,7 +148,7 @@ export function Gallery() {
             {photos.map((p, i) => (
               <Reveal as="li" key={p.src} variant="zoom" delay={(i % 4) * 90} className={`gallery__cell gallery__cell--${p.orientation || 'portrait'}`}>
                 <button type="button" onClick={() => setViewer(i)} aria-label={`Open full screen: ${p.alt}`}>
-                  <Photo p={p} sizes="(min-width: 900px) 300px, 46vw" />
+                  <Photo p={p} sizes={p.orientation === 'wide' ? '(min-width: 900px) 1080px, 94vw' : p.orientation === 'landscape' ? '(min-width: 900px) 540px, 94vw' : '(min-width: 900px) 300px, 46vw'} />
                 </button>
               </Reveal>
             ))}
