@@ -107,12 +107,12 @@ export function monogramGlyphs() {
 }
 
 /** Primary monogram (inner content; viewBox -150 -150 300 300). */
-export function monogram({ p = 'aa', color = null, ornaments = true } = {}) {
+export function monogram({ p = 'aa', color = null, ornaments = true, knock: knockColor = null } = {}) {
   const g = monogramGlyphs();
   const gold = color || `url(#${p}-gold)`;
   const wine = color || `url(#${p}-wine)`;
   const line = color || `url(#${p}-goldline)`;
-  const knock = color && color !== '#FFFFFF' ? '#FFFFFF' : color ? '#3A2E2A' : '#FFF9F0';
+  const knock = knockColor || (color && color !== '#FFFFFF' ? '#FFFFFF' : color ? '#3A2E2A' : '#FFF9F0');
   let s = '';
   if (ornaments) {
     s += `<circle r="132" fill="none" stroke="${line}" stroke-width="2.4"/>`;

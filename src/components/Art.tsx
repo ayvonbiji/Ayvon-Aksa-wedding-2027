@@ -50,6 +50,13 @@ export const art = {
   /** Ornate oval for the invitation cover, 340×440. */
   oval: { svg: o.ovalFrame(170, 228, 140, 180) + o.bow(170, 40, 112, { tails: 0.5 }) + o.cluster(170, 412, 70, { seed: 1 }), viewBox: '0 0 340 470' },
   rose: { svg: o.rose(20, 20, 18, { tone: 'blush' }), viewBox: '0 0 40 40' },
+  /* invitation cover */
+  roseCorner: { svg: o.roseCorner(), viewBox: '-20 -20 360 360' },
+  hanging: { svg: o.hangingOrnament(), viewBox: '0 0 80 290' },
+  flourish: { svg: o.flourish(), viewBox: '0 0 96 30' },
+  goldDivider: { svg: o.goldDivider(), viewBox: '0 0 300 24' },
+  envSprig: { svg: o.sprig(6, 40, 70, { dir: -32, curl: 0.3 }) + o.sprig(6, 40, 52, { dir: -70, curl: -0.25 }) + o.blossom(10, 38, 5), viewBox: '0 0 80 50' },
+  cardCorner: { svg: o.cluster(70, 70, 66, { dir: 45, seed: 1 }) + o.sprig(110, 40, 90, { dir: 8 }) + o.sprig(40, 110, 90, { dir: 82, curl: -0.25 }), viewBox: '0 0 200 200' },
   scrollTop: { svg: o.scroll(60, 14, 44, { mirror: true }) + o.scroll(100, 14, 44) + '<circle cx="80" cy="14" r="3" fill="url(#aa-gold)"/>', viewBox: '0 0 160 30' },
 };
 

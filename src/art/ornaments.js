@@ -281,3 +281,81 @@ export function svgDoc(w, h, inner, { p = 'aa', bg = null, title = '' } = {}) {
     (title ? `<title>${title}</title>` : '') + defs(p) +
     (bg ? `<rect width="${w}" height="${h}" fill="${bg}"/>` : '') + inner + '</svg>';
 }
+
+/* ── Invitation-cover artwork ─────────────────────────────────────────────── */
+
+/** Leaf painted in gold (for the luxury rose arrangements). */
+export function goldLeaf(x, y, len, rot = 0, { p = 'aa' } = {}) {
+  const w = len * 0.34;
+  return `<g transform="translate(${f(x)} ${f(y)}) rotate(${f(rot)})">` +
+    `<path d="M0 0 C${f(len * 0.3)} ${f(-w)} ${f(len * 0.75)} ${f(-w * 0.8)} ${f(len)} 0 C${f(len * 0.75)} ${f(w * 0.8)} ${f(len * 0.3)} ${f(w)} 0 0Z" fill="url(#${p}-gold)"/>` +
+    `<path d="M${f(len * 0.05)} 0 Q${f(len * 0.5)} ${f(-w * 0.12)} ${f(len * 0.92)} 0" stroke="#FFF2CF" stroke-width="${f(Math.max(len * 0.02, 0.4))}" fill="none" opacity=".7"/>` +
+    '</g>';
+}
+
+/**
+ * Lush corner arrangement of roses (deep burgundy, blush, ivory), green and
+ * gold leaves, buds and small blossoms. Drawn for the TOP-LEFT corner inside
+ * a 420×420 box; mirror/rotate it with CSS for other corners.
+ */
+export function roseCorner({ p = 'aa' } = {}) {
+  let g = '';
+  // trailing greenery and gold leaves first (behind)
+  g += sprig(150, 40, 230, { dir: 12, p, curl: 0.22 });
+  g += sprig(40, 150, 230, { dir: 78, p, curl: -0.22 });
+  g += sprig(210, 120, 170, { dir: 30, p, curl: 0.3 });
+  const leaves = [
+    [118, 26, 70, 8], [176, 70, 64, 28], [60, 196, 70, 80], [24, 112, 62, 96], [236, 30, 58, -6],
+    [150, 168, 60, 42], [96, 230, 56, 70], [210, 150, 54, 22],
+  ];
+  leaves.forEach(([x, y, l, r], i) => (g += i % 3 === 1 ? goldLeaf(x, y, l, r, { p }) : leaf(x, y, l, r, { p })));
+  [[250, 60, 44, -12], [70, 260, 46, 98], [190, 200, 40, 40], [268, 112, 36, 18]].forEach(([x, y, l, r]) => (g += goldLeaf(x, y, l, r, { p })));
+  // roses
+  g += rose(70, 70, 66, { tone: 'deep', rot: 10, p });
+  g += rose(160, 40, 46, { tone: 'blush', rot: 40, p });
+  g += rose(40, 165, 48, { tone: 'ivory', rot: 70, p });
+  g += rose(150, 128, 44, { tone: 'deep', rot: 120, p });
+  g += rose(225, 92, 30, { tone: 'ivory', rot: 15, p });
+  g += rose(95, 210, 30, { tone: 'blush', rot: 200, p });
+  g += bud(272, 70, 14, 60, { p }) + bud(58, 262, 13, 170, { p }) + bud(206, 168, 12, 120, { p });
+  // fillers
+  [[200, 30, 9], [128, 175, 8], [20, 225, 8], [245, 140, 7], [118, 255, 7], [282, 34, 6]].forEach(([x, y, r]) => (g += blossom(x, y, r)));
+  g += breath(250, 175, 26, 9, 2) + breath(170, 240, 22, 8, 5);
+  return g;
+}
+
+/** Hanging gold pendant (thin chains with beads and a filigree drop), 80×300 box. */
+export function hangingOrnament({ p = 'aa' } = {}) {
+  let g = `<g fill="none" stroke="#C9A86A" stroke-width="1.1">`;
+  g += '<line x1="40" y1="0" x2="40" y2="200"/>';
+  g += '<line x1="18" y1="0" x2="18" y2="120"/><line x1="62" y1="0" x2="62" y2="150"/>';
+  g += '</g>';
+  [40, 90, 140].forEach((y) => (g += `<circle cx="40" cy="${y}" r="2.6" fill="url(#${p}-gold)"/>`));
+  g += `<circle cx="18" cy="120" r="3.4" fill="url(#${p}-gold)"/><circle cx="62" cy="150" r="3.8" fill="url(#${p}-gold)"/>`;
+  // filigree drop
+  g += `<g transform="translate(40 228)">` +
+    `<path d="M0 -28 C14 -14 18 0 0 30 C-18 0 -14 -14 0 -28Z" fill="url(#${p}-gold)" opacity=".9"/>` +
+    `<path d="M0 -18 C8 -8 10 2 0 18 C-10 2 -8 -8 0 -18Z" fill="#7A2239"/>` +
+    scroll(-10, -26, 18, { dir: 200, p, width: 1 }) + scroll(10, -26, 18, { dir: -20, p, width: 1, mirror: true }) +
+    `<circle cy="38" r="3" fill="url(#${p}-gold)"/><path d="M0 42 L3 50 L0 58 L-3 50Z" fill="url(#${p}-gold)"/>` +
+    '</g>';
+  return g;
+}
+
+/** Gold flourish for either side of a button (left side; mirror for right), 90×30 box. */
+export function flourish({ p = 'aa' } = {}) {
+  return `<g fill="none" stroke="url(#${p}-goldline)" stroke-width="1.4" stroke-linecap="round">` +
+    '<path d="M88 15 C70 15 62 4 50 6 C40 8 40 20 50 20 C58 20 58 12 52 12"/>' +
+    '<path d="M50 15 C34 15 26 24 14 22 C6 20 6 10 14 10"/>' +
+    '</g>' +
+    `<circle cx="10" cy="15" r="2.4" fill="url(#${p}-gold)"/><path d="M84 15 L88 11 L92 15 L88 19Z" fill="url(#${p}-gold)"/>`;
+}
+
+/** Ornate gold divider with a central heart-diamond, 300×24 box. */
+export function goldDivider({ p = 'aa' } = {}) {
+  return `<line x1="10" y1="12" x2="128" y2="12" stroke="#C9A86A" stroke-width="1"/>` +
+    `<line x1="172" y1="12" x2="290" y2="12" stroke="#C9A86A" stroke-width="1"/>` +
+    scroll(138, 12, 14, { dir: 180, p, width: 1 }) + scroll(162, 12, 14, { dir: 0, p, width: 1, mirror: true }) +
+    `<path d="M150 5 L156 12 L150 19 L144 12Z" fill="url(#${p}-gold)"/>` +
+    `<circle cx="8" cy="12" r="2" fill="url(#${p}-gold)"/><circle cx="292" cy="12" r="2" fill="url(#${p}-gold)"/>`;
+}

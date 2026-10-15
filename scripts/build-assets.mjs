@@ -57,6 +57,40 @@ write(pub('brand', 'wordmark-mono.svg'), doc(`0 0 ${wmMono.w} ${wmMono.h}`, `<ti
 /* 5. Compact header logo: letters only inside a fine ring */
 const compact = doc('-150 -150 300 300', `<title>${names}</title><circle r="146" fill="#FBF6EE"/><circle r="138" fill="none" stroke="url(#aa-goldline)" stroke-width="6"/>${monogram({ ornaments: false })}`, { w: 300, h: 300 });
 write(pub('brand', 'logo-header.svg'), compact);
+/* 5b. Wax seal for the invitation envelope: burgundy wax, gold rim, laurel, crown, gold A & A */
+{
+  // irregular wax edge
+  let edge = '';
+  const N = 36;
+  for (let i = 0; i <= N; i++) {
+    const a = (i / N) * Math.PI * 2;
+    const r = 138 + Math.sin(i * 2.7) * 5 + Math.cos(i * 1.3) * 4;
+    edge += `${i ? 'L' : 'M'}${(Math.cos(a) * r).toFixed(1)} ${(Math.sin(a) * r).toFixed(1)}`;
+  }
+  let laurel = '';
+  for (const side of [-1, 1]) for (let i = 0; i < 8; i++) {
+    const a = Math.PI / 2 + side * (0.35 + i * 0.16);
+    const r = 98;
+    const x = Math.cos(a) * r, y = Math.sin(a) * r;
+    const rot = (a * 180) / Math.PI + side * 90 + (i % 2 ? 24 : -24) * side;
+    laurel += `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="9" ry="3.6" transform="rotate(${rot.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)})" fill="url(#aa-gold)"/>`;
+  }
+  const crown = `<g transform="translate(0 -100)" fill="url(#aa-gold)"><path d="M-22 6 L-26 -12 L-13 -3 L0 -18 L13 -3 L26 -12 L22 6 Z"/><rect x="-22" y="6" width="44" height="5" rx="2"/><circle cx="-26" cy="-14" r="3"/><circle cx="0" cy="-21" r="3.4"/><circle cx="26" cy="-14" r="3"/></g>`;
+  const inner =
+    `<radialGradient id="wax" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#B2475F"/><stop offset=".45" stop-color="#7A2239"/><stop offset="1" stop-color="#3E0C1A"/></radialGradient>` +
+    `<radialGradient id="waxIn" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#6E1B31"/><stop offset="1" stop-color="#4A1222"/></radialGradient>` +
+    `<path d="${edge}Z" fill="url(#wax)"/>` +
+    `<circle r="118" fill="url(#waxIn)" stroke="#2C0A14" stroke-opacity=".35" stroke-width="3"/>` +
+    `<circle r="112" fill="none" stroke="url(#aa-gold)" stroke-width="4"/>` +
+    `<circle r="104" fill="none" stroke="url(#aa-gold)" stroke-width="1.2" stroke-dasharray="2 5" stroke-linecap="round"/>` +
+    laurel + crown +
+    `<g transform="translate(0 8) scale(.62)">${monogram({ ornaments: false, color: 'url(#aa-gold)', knock: '#5A1628' })}</g>` +
+    `<path d="M-92 -70 A118 118 0 0 1 -30 -112" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="7" stroke-linecap="round"/>`;
+  const sealSvg = doc('-150 -150 300 300', `<title>${names} wax seal</title>${inner}`, { w: 300, h: 300 });
+  write(pub('brand', 'wax-seal.svg'), sealSvg);
+  png(sealSvg, pub('brand', 'wax-seal.png'), 600);
+}
+
 
 /* 6. Full invitation lock-up: monogram + wordmark + date (transparent) */
 const lockW = Math.max(wm.w, 620);

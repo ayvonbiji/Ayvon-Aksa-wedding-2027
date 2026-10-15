@@ -98,9 +98,18 @@ self-hosted.
 **Monogram:** two Roman capital **A**s — gold for Ayvon, burgundy for Aksa — interlaced
 with a script ampersand, inside a gold ring with a laurel and rose.
 
+**Opening invitation** (`src/components/InvitationCover.tsx`, `src/styles/cover.css`):
+1. Welcome — burgundy velvet, rose arrangements, hanging gold pendant, falling petals,
+   gold particles; "You are cordially invited", envelope, names and date fade in.
+2. Open Invitation — the wax seal (`public/brand/wax-seal.svg`) lifts, the flap opens in
+   3D, the letter rises and petals burst out.
+3. The invitation card — names, invitation line, date, time and venue appear in sequence.
+4. Continue to Our Wedding — the card lifts away into the website.
+**Skip** (top right) or **Escape** goes straight to the website at any time; links with a
+`#section` skip the cover. Reduced motion: no particles or 3D, instant fades.
+
 **Animations** (all disabled or reduced for visitors who prefer reduced motion):
-envelope opening (wax seal breaks, flap lifts, card rises, dissolves into the site;
-click again to skip) · staggered name/date entrance with a soft blur-in · glowing gold
+envelope opening · staggered name/date entrance with a soft blur-in · glowing gold
 monogram · drifting gold sparkles, falling petals and swaying bouquets · section reveals
 (rise, slide in from alternating sides on the story timeline, zoom on the gallery) ·
 countdown digits roll in when they change · tile/card hover lift · gallery hover zoom ·
