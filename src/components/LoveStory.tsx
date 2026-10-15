@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { story } from '../content/story';
+import { wedding } from '../config/wedding';
 import { asset } from '../lib/assets';
 import { Art, art } from './Art';
 import { Reveal } from './Reveal';
@@ -57,6 +58,7 @@ export function LoveStory() {
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <article className="timeline__card">
+                  <Art {...art.roseDeep} className="timeline__rose" />
                   {(ch.date || ch.place) && (
                     <p className="label timeline__meta">{[ch.date, ch.place].filter(Boolean).join(' · ')}</p>
                   )}
@@ -79,11 +81,16 @@ export function LoveStory() {
           </ol>
 
           {story.closingQuote && (
-            <Reveal className="story__quote">
-              <Art {...art.scrollTop} className="story__quote-orn" />
+            <Reveal className="story__quote" variant="zoom">
+              <Art {...art.cardCorner} className="story__quote-flower story__quote-flower--tl" />
+              <Art {...art.cardCorner} className="story__quote-flower story__quote-flower--br" />
+              <Art {...art.heartDivider} className="story__quote-orn" />
               <blockquote>
                 <p>{story.closingQuote}</p>
               </blockquote>
+              <p className="story__quote-sign">
+                {wedding.groom.first} <span>&amp;</span> {wedding.bride.first}
+              </p>
             </Reveal>
           )}
         </>

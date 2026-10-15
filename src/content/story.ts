@@ -2,7 +2,8 @@
  * ─────────────────────────────────────────────────────────────────────────────
  *  OUR LOVE STORY
  * ─────────────────────────────────────────────────────────────────────────────
- *  Written in Ayvon & Aksa's own words (from "From Kerala to Italy").
+ *  Written in Ayvon & Aksa's own words (from "From Kerala to Italy"),
+ *  condensed into four short chapters.
  *
  *  • ADD a chapter     → copy one { … } block and paste it where it belongs.
  *  • EDIT a chapter    → change its text.
@@ -53,72 +54,39 @@ export const story = {
   },
 
   closingQuote:
-    'We were not looking for love. We simply agreed to meet. One coffee date became countless conversations. One meeting became our forever.',
+    'We were not looking for love — we simply agreed to meet. One meeting became our forever, and we can’t wait to spend a lifetime of love and laughter together.',
 
   chapters: [
     {
-      title: 'Not Looking for Marriage',
-      place: 'Kerala',
-      text: ['Ayvon was focused on his future and career in Kerala. Marriage was not in his plans.'],
+      title: 'Two Paths, One Proposal',
+      place: 'Kerala & Italy',
+      text: [
+        'Ayvon was building his future in Kerala. Aksa was chasing her dreams in Italy. Neither of us was looking for marriage.',
+        'Then our families shared a proposal, and we simply said, “Let’s just meet and see.”',
+      ],
       note: 'Maybe someday… but not now.',
     },
     {
-      title: 'A Proposal Arrives',
-      text: ['One day, both families brought up a marriage proposal.', 'Just one line… “Let’s just meet and see.”'],
-    },
-    {
-      title: 'Her Side',
-      place: 'Italy',
-      text: ['In Italy, Aksa was living her life, chasing her dreams. Marriage wasn’t on her mind either.'],
-      note: 'Not now… I have so much to do.',
-    },
-    {
       title: 'The First Meeting',
-      text: ['Our families met and we saw each other for the first time.', 'A little nervous… but the conversation felt so natural.'],
-    },
-    {
-      title: 'The Coffee Date',
       text: [
-        'The next day, her family couldn’t visit our home. So we met outside. Just the two of us.',
-        'A coffee date that turned into hours of conversations and laughter.',
+        'Our families met, and we saw each other for the first time — a little nervous, yet it felt so natural.',
+        'The next day, a coffee for two became hours of conversation and laughter. Two days later, Aksa flew back to Italy.',
       ],
     },
     {
-      title: 'The Goodbye',
-      text: ['After two days, it was time for Aksa to return to Italy.', 'Goodbyes are never easy.'],
+      title: 'Miles Apart, Hearts Together',
+      text: [
+        'Different countries, different time zones, one connection.',
+        'Morning messages, video calls and talks until 2 AM — little by little, we fell in love without even realizing.',
+      ],
     },
     {
-      title: 'Kerala & Italy',
-      text: ['Different countries. Different time zones. One connection.'],
-    },
-    {
-      title: 'Long Talks, Late Nights',
-      text: ['Morning messages, video calls, late-night chats…', 'Some nights until 2 AM, sometimes even later.'],
-    },
-    {
-      title: 'Growing Closer',
-      text: ['Day by day, call by call, we became a part of each other’s lives.', 'Little by little, we fell in love without even realizing.'],
-    },
-    {
-      title: 'Families Decide',
-      text: ['Our families saw our happiness and the bond we shared.', 'Together, they decided our future.'],
-    },
-    {
-      title: 'The Decision',
-      text: ['The wedding would be planned for the future.', 'No rush… but a promise of forever.'],
-    },
-    {
-      title: 'Countless Memories',
-      text: ['Every call, every chat, every moment became a beautiful memory.'],
-    },
-    {
-      title: 'The Journey',
-      text: ['From a simple meeting to a beautiful connection.', 'From two strangers to soulmates.'],
-    },
-    {
-      title: 'The Beginning of Forever',
+      title: 'A Promise of Forever',
       date: '23 August 2027',
-      text: ['The wedding is fixed. The future is ours.', 'Here’s to love, laughter and a lifetime together.'],
+      text: [
+        'Our families saw our happiness and, together, decided our future. No rush — just a promise of forever.',
+        'From two strangers to soulmates, our forever begins on 23 August 2027.',
+      ],
       note: 'To be continued…',
     },
   ] as StoryChapter[],
