@@ -581,7 +581,7 @@ p {
 .header__nav ul {
   position: relative;
   display: flex;
-  gap: clamp(1rem, 2.4vw, 2.2rem);
+  gap: clamp(1.2rem, 3vw, 2.8rem);
   list-style: none;
   margin: 0;
   padding: 0;

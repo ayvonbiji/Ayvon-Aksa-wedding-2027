@@ -3,7 +3,6 @@ import { Logo } from './Logo';
 
 export const NAV = [
   { id: 'home', label: 'Home' },
-  { id: 'wedding-day', label: 'Wedding Day' },
   { id: 'invitation', label: 'Invitation' },
   { id: 'love-story', label: 'Our Love Story' },
   { id: 'gallery', label: 'Gallery' },
