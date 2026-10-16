@@ -129,7 +129,7 @@ describe('engagement (secondary event)', () => {
 describe('wedding invitation card', () => {
   it('has both families with the correct spellings', () => {
     expect(wedding.groom).toMatchObject({ full: 'Ayvon Joseph Biji', relation: 'Son of', parents: 'Biji Joseph & Asha Kuriakose', house: 'Kadackal' });
-    expect(wedding.bride).toMatchObject({ full: 'Aksa Saji Kunnel', relation: 'Daughter of', parents: 'Kunnel Sajimon Kurian & Mathew Anjumole', house: 'Kunnel' });
+    expect(wedding.bride).toMatchObject({ full: 'Aksa Saji Kunnel', relation: 'Daughter of', parents: 'Sajimon Kurian Kunnel & Anjumole Mathew', house: 'Kunnel' });
   });
   it('quotes Job 23:14 (GNT) as verified', () => {
     expect(wedding.invitation.verse).toEqual({ text: 'He will fulfill what he has planned for me.', reference: 'Job 23:14', translation: 'GNT' });

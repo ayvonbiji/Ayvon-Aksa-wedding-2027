@@ -22,7 +22,7 @@ export const wedding = {
     first: 'Aksa',
     full: 'Aksa Saji Kunnel',
     relation: 'Daughter of',
-    parents: 'Kunnel Sajimon Kurian & Mathew Anjumole',
+    parents: 'Sajimon Kurian Kunnel & Anjumole Mathew',
     house: 'Kunnel',
   },
 
