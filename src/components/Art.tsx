@@ -53,8 +53,7 @@ export const art = {
   oval: { svg: o.ovalFrame(170, 228, 140, 180) + o.bow(170, 40, 112, { tails: 0.5 }) + o.cluster(170, 412, 70, { seed: 1 }), viewBox: '0 0 340 470' },
   rose: { svg: o.rose(20, 20, 18, { tone: 'blush' }), viewBox: '0 0 40 40' },
   roseDeep: { svg: o.leaf(20, 20, 16, -30) + o.leaf(20, 20, 14, 200) + o.rose(20, 20, 15, { tone: 'deep' }), viewBox: '0 0 40 40' },
-  /* event cards */
-  roseSpray: { svg: o.roseSpray(), viewBox: '20 20 280 130' },
+  /* card ornaments */
   goldCorner: { svg: o.goldCorner(), viewBox: '0 0 110 110' },
   sideVine: { svg: o.sideVine(), viewBox: '0 0 50 260' },
   fleuron: { svg: o.fleuron(), viewBox: '0 0 120 36' },

@@ -54,19 +54,11 @@ You can also run `npm run build:docs` yourself and commit `docs/`.
 | Logos, favicons, social image, QR codes, QR card generator | `scripts/build-assets.mjs` |
 | Guest-photo database & security rules | `supabase/migrations/001_wedding_memories.sql` |
 
-### Event cards ("Our Special Days")
+### Engagement & wedding details
 
-Two matching cards, **Engagement first, Wedding second** (on phones they stack in the same
-order). Both come from one `EventCard` component in `src/components/WeddingDay.tsx`;
-the data lives in `src/config/wedding.ts`:
-
-* `engagement` — Wednesday, 18 August 2027, 5:00 PM IST, St. John's Knanaya Jacobite
-  Church (Puthenpally), GG8F+GX8, SH 1, Chingavanam, Kerala 686531, India.
-* `ceremony` — Monday, 23 August 2027, 11:00 AM IST, St. Thomas Valiyapally, Ranni.
-
-Each has its own Get Directions, Apple/Outlook (.ics) and Google Calendar buttons;
-change the length with `durationMinutes`. Clearing `engagement.venue` brings back
-"Venue to be announced" and hides Directions. The countdown always targets the wedding.
+The dates, times and venues live in `src/config/wedding.ts` (`engagement` and `ceremony`) and
+appear on the wedding invitation card (`#invitation`), with Directions, Apple/Outlook (.ics) and
+Google Calendar links for each event under the card. The countdown always targets the wedding.
 
 ### Love story
 

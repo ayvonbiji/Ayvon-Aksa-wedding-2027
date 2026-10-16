@@ -360,27 +360,7 @@ export function goldDivider({ p = 'aa' } = {}) {
     `<circle cx="8" cy="12" r="2" fill="url(#${p}-gold)"/><circle cx="292" cy="12" r="2" fill="url(#${p}-gold)"/>`;
 }
 
-/* ── Event-card artwork ──────────────────────────────────────────────────── */
-
-/** Horizontal rose spray for the top of a card (burgundy centre, cream sides), 320×160. */
-export function roseSpray({ p = 'aa' } = {}) {
-  let g = '';
-  g += sprig(150, 92, 150, { dir: 188, p, curl: -0.22 });
-  g += sprig(170, 92, 150, { dir: -8, p, curl: 0.22 });
-  [[120, 70, 50, 200], [200, 70, 50, -20], [140, 110, 46, 150], [180, 110, 46, 30], [96, 104, 40, 170], [224, 104, 40, 10]].forEach(
-    ([x, y, l, r], i) => (g += i % 3 === 2 ? goldLeaf(x, y, l, r, { p }) : leaf(x, y, l, r, { p })),
-  );
-  [[60, 96, 30, 196], [262, 96, 30, -16]].forEach(([x, y, l, r]) => (g += goldLeaf(x, y, l, r, { p })));
-  g += breath(110, 52, 22, 9, 3) + breath(212, 52, 22, 9, 7);
-  g += bud(70, 84, 10, -80, { p }) + bud(250, 84, 10, 80, { p });
-  g += rose(98, 98, 19, { tone: 'blush', rot: 30, p });
-  g += rose(222, 98, 19, { tone: 'blush', rot: 80, p });
-  g += rose(122, 90, 28, { tone: 'ivory', rot: 15, p });
-  g += rose(198, 90, 28, { tone: 'ivory', rot: 50, p });
-  g += rose(160, 80, 38, { tone: 'deep', rot: 20, p });
-  [[86, 74, 6], [236, 74, 6], [146, 122, 6], [176, 124, 6]].forEach(([x, y, r]) => (g += blossom(x, y, r)));
-  return g;
-}
+/* ── Card ornaments ──────────────────────────────────────────────────── */
 
 /** Gold filigree for the top-left corner of a card, 110×110 (rotate for other corners). */
 export function goldCorner({ p = 'aa' } = {}) {

@@ -3,7 +3,6 @@ import { SvgDefs } from './components/Art';
 import { InvitationCover } from './components/InvitationCover';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
-import { WeddingDay } from './components/WeddingDay';
 import { WeddingInvitation } from './components/WeddingInvitation';
 import { LoveStory } from './components/LoveStory';
 import { Gallery } from './components/Gallery';
@@ -41,12 +40,11 @@ export default function App() {
           }}
         />
       )}
-      <a className="skip-link" href="#wedding-day">Skip to wedding details</a>
+      <a className="skip-link" href="#invitation">Skip to the invitation</a>
       <div ref={site} className={`site ${opened ? 'site--open' : ''}`}>
         <Header />
         <main id="main">
           <Hero nowMs={nowMs} />
-          <WeddingDay />
           <WeddingInvitation />
           <Verse />
           <LoveStory />

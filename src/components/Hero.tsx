@@ -89,12 +89,12 @@ export function Hero({ nowMs }: { nowMs: number }) {
           </div>
 
           <a
-            href="#wedding-day"
+            href="#invitation"
             className="btn btn--solid hero__cta enter"
             style={d(2)}
             onClick={(e) => {
               e.preventDefault();
-              scrollToId('wedding-day');
+              scrollToId('invitation');
             }}
           >
             {h.button}
@@ -103,12 +103,12 @@ export function Hero({ nowMs }: { nowMs: number }) {
       </div>
 
       <a
-        href="#wedding-day"
+        href="#invitation"
         className="scroll-cue"
-        aria-label="Scroll to wedding details"
+        aria-label="Scroll to the wedding invitation"
         onClick={(e) => {
           e.preventDefault();
-          scrollToId('wedding-day');
+          scrollToId('invitation');
         }}
       >
         <span />

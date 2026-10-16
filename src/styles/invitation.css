@@ -8,6 +8,8 @@
 
 .invitation {
   background:
+    /* blend seamlessly out of the hero above */
+    linear-gradient(180deg, #f4eada 0, rgba(244, 234, 218, 0) 240px),
     radial-gradient(ellipse 70% 55% at 50% 45%, rgba(255, 249, 236, 0.95), transparent 70%),
     linear-gradient(180deg, var(--ivory) 0%, #f6ecdc 100%);
 }
@@ -566,6 +568,10 @@
     width: 16cqw;
     margin: 0.4cqw 0 0 11.5cqw;
   }
+}
+
+.hero + .invitation {
+  padding-top: clamp(3.5rem, 8vw, 6rem);
 }
 
 /* ── Directions & calendar links under the card ─────────────────────────── */
